@@ -1,20 +1,254 @@
+import { useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, Save } from "lucide-react";
+import { crearTicket } from "../api/ticketApi";
+import { listarCategoriasTicket } from "../api/categoriaTicketApi";
+import { listarDepartamentos } from "../api/departamentoApi";
+import { TICKET_PRIORIDADES, USUARIO_PRUEBA_ID } from "../utils/constantes";
+
 function TicketCreatePage() {
+  const navigate = useNavigate();
+
+  const [categorias, setCategorias] = useState([]);
+  const [departamentos, setDepartamentos] = useState([]);
+
+  const [cargandoCatalogos, setCargandoCatalogos] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+  const [error, setError] = useState("");
+
+  const [formulario, setFormulario] = useState({
+    titulo: "",
+    descripcion: "",
+    prioridad: TICKET_PRIORIDADES.MEDIA,
+    categoriaId: "",
+    departamentoSolicitanteId: "",
+  });
+
+  useEffect(() => {
+    cargarCatalogos();
+  }, []);
+
+  const cargarCatalogos = async () => {
+    try {
+      setCargandoCatalogos(true);
+      setError("");
+
+      const [categoriasResponse, departamentosResponse] = await Promise.all([
+        listarCategoriasTicket(),
+        listarDepartamentos(),
+      ]);
+
+      setCategorias(categoriasResponse.data);
+      setDepartamentos(departamentosResponse.data);
+    } catch (err) {
+      console.error(err);
+      setError("No se pudieron cargar las categorías o departamentos.");
+    } finally {
+      setCargandoCatalogos(false);
+    }
+  };
+
+  const manejarCambio = (event) => {
+    const { name, value } = event.target;
+
+    setFormulario({
+      ...formulario,
+      [name]: value,
+    });
+  };
+
+  const guardarTicket = async (event) => {
+    event.preventDefault();
+
+    if (!formulario.titulo.trim()) {
+      setError("El título es obligatorio.");
+      return;
+    }
+
+    if (!formulario.descripcion.trim()) {
+      setError("La descripción es obligatoria.");
+      return;
+    }
+
+    if (!formulario.categoriaId) {
+      setError("Debes seleccionar una categoría.");
+      return;
+    }
+
+    if (!formulario.departamentoSolicitanteId) {
+      setError("Debes seleccionar un departamento.");
+      return;
+    }
+
+    try {
+      setGuardando(true);
+      setError("");
+
+      const data = {
+        titulo: formulario.titulo.trim(),
+        descripcion: formulario.descripcion.trim(),
+        prioridad: formulario.prioridad,
+        categoriaId: Number(formulario.categoriaId),
+        departamentoSolicitanteId: Number(formulario.departamentoSolicitanteId),
+        creadoPorId: USUARIO_PRUEBA_ID,
+      };
+
+      const response = await crearTicket(data);
+
+      navigate(`/tickets/${response.data.id}`);
+    } catch (err) {
+      console.error(err);
+      setError("No se pudo crear el ticket.");
+    } finally {
+      setGuardando(false);
+    }
+  };
+
   return (
     <div>
       <div className="mb-6">
+        <Link
+          to="/tickets"
+          className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
+        >
+          <ArrowLeft size={16} />
+          Volver al listado
+        </Link>
+
         <h1 className="text-3xl font-bold text-slate-900">
           Nuevo Ticket
         </h1>
+
         <p className="text-slate-600">
-          Formulario para registrar una nueva solicitud de soporte.
+          Registra una nueva solicitud de soporte técnico.
         </p>
       </div>
 
-      <div className="rounded-2xl bg-white p-6 shadow">
-        <p className="text-slate-600">
-          Aquí construiremos el formulario de creación de tickets.
-        </p>
-      </div>
+      <section className="rounded-2xl bg-white p-6 shadow">
+        {error && (
+          <div className="mb-5 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+            {error}
+          </div>
+        )}
+
+        {cargandoCatalogos ? (
+          <p className="text-sm text-slate-500">
+            Cargando información del formulario...
+          </p>
+        ) : (
+          <form onSubmit={guardarTicket} className="space-y-5">
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Título
+              </label>
+
+              <input
+                type="text"
+                name="titulo"
+                value={formulario.titulo}
+                onChange={manejarCambio}
+                className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                placeholder="Ejemplo: No puedo ingresar al sistema"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-sm font-medium text-slate-700">
+                Descripción
+              </label>
+
+              <textarea
+                name="descripcion"
+                value={formulario.descripcion}
+                onChange={manejarCambio}
+                rows="5"
+                className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                placeholder="Describe el problema con el mayor detalle posible..."
+              />
+            </div>
+
+            <div className="grid gap-5 md:grid-cols-3">
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Prioridad
+                </label>
+
+                <select
+                  name="prioridad"
+                  value={formulario.prioridad}
+                  onChange={manejarCambio}
+                  className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                >
+                  <option value={TICKET_PRIORIDADES.BAJA}>BAJA</option>
+                  <option value={TICKET_PRIORIDADES.MEDIA}>MEDIA</option>
+                  <option value={TICKET_PRIORIDADES.ALTA}>ALTA</option>
+                  <option value={TICKET_PRIORIDADES.CRITICA}>CRITICA</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Categoría
+                </label>
+
+                <select
+                  name="categoriaId"
+                  value={formulario.categoriaId}
+                  onChange={manejarCambio}
+                  className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                >
+                  <option value="">Selecciona una categoría</option>
+
+                  {categorias.map((categoria) => (
+                    <option key={categoria.id} value={categoria.id}>
+                      {categoria.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="mb-2 block text-sm font-medium text-slate-700">
+                  Departamento
+                </label>
+
+                <select
+                  name="departamentoSolicitanteId"
+                  value={formulario.departamentoSolicitanteId}
+                  onChange={manejarCambio}
+                  className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                >
+                  <option value="">Selecciona un departamento</option>
+
+                  {departamentos.map((departamento) => (
+                    <option key={departamento.id} value={departamento.id}>
+                      {departamento.nombre}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            <div className="flex justify-end gap-3">
+              <Link
+                to="/tickets"
+                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+              >
+                Cancelar
+              </Link>
+
+              <button
+                type="submit"
+                disabled={guardando}
+                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                <Save size={18} />
+                {guardando ? "Guardando..." : "Guardar ticket"}
+              </button>
+            </div>
+          </form>
+        )}
+      </section>
     </div>
   );
 }
