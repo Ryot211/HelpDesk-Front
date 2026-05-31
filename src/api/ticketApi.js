@@ -5,7 +5,7 @@ export const listarTickets = () => {
 };
 
 export const buscarTicket = (id) => {
-  return api.post("/api/tickets/buscar", { id });
+  return api.post(`/api/tickets/buscar/${id}`);
 };
 
 export const crearTicket = (data) => {
@@ -33,12 +33,16 @@ export const agregarComentarioTicket = (data) => {
 };
 
 export const listarAdjuntosTicket = (ticketId) => {
-  return api.post("/api/tickets/adjuntos/listar", { ticketId });
+  return api.post(`/api/tickets/adjuntos/listar/${ ticketId }`);
 };
 
 export const registrarAdjuntoTicket = (data) => {
   return api.post("/api/tickets/adjuntos/registrar", data);
 };
+
+export const inactivarAdjuntoTicket = (ticketId) =>{
+  return api.post(`/api/tickets/adjuntos/inactivar/${ticketId}`);
+}
 
 export const listarHistorialTicket = (id) => {
   return api.post("/api/tickets/historial/listar", { id });

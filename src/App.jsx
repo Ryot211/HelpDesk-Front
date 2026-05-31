@@ -1,12 +1,7 @@
-import { useState } from 'react'
-import TicketsPage from './pages/TicketsPage'
+import AppRoutes from './routes/AppRoutes';
 
 function App() {
-  return(
-    <TicketsPage/>
-   
-  )
-
+  return <AppRoutes/>;
 }
 
-export default App
+export default App;

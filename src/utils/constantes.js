@@ -1,0 +1,27 @@
+export const USUARIO_PRUEBA_ID = 3;
+
+export const TIPO_COMENTARIO = {
+  PUBLICO: "PUBLICO",
+  INTERNO: "INTERNO",
+  SISTEMA: "SISTEMA",
+};
+
+
+
+export const TICKET_ESTADOS={
+      REGISTRADO: "REGISTRADO",
+        ASIGNADO: "ASIGNADO",
+        EN_PROCESO: "EN_PROCESO",
+        RESUELTO: "RESUELTO",
+        CERRADO: "CERRADO",
+        ANULADO: "ANULADO",
+        REABIERTO: "REABIERTO",
+};
+
+export const TICKET_PRIORIDADES = {
+    BAJA: "BAJA",
+  MEDIA: "MEDIA",
+  ALTA: "ALTA",
+  CRITICA: "CRITICA",
+
+};
