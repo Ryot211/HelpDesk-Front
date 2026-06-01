@@ -86,7 +86,8 @@ function TicketAttachmentsSection({ ticketId }) {
         nombreOriginal: formulario.nombreOriginal.trim(),
         nombreArchivo: formulario.nombreArchivo.trim(),
         rutaArchivo: formulario.rutaArchivo.trim(),
-        tipoContenido: formulario.tipoContenido.trim() || "application/octet-stream",
+        tipoContenido:
+          formulario.tipoContenido.trim() || "application/octet-stream",
         tamanioBytes: formulario.tamanioBytes
           ? Number(formulario.tamanioBytes)
           : null,
@@ -103,7 +104,7 @@ function TicketAttachmentsSection({ ticketId }) {
       });
 
       await cargarAdjuntos();
-       await mostrarExito("Adjunto agregado correctamente.");
+      await mostrarExito("Adjunto agregado correctamente.");
     } catch (err) {
       console.error(err);
       await mostrarError("No se pudo agregar el adjunto.");
@@ -114,9 +115,9 @@ function TicketAttachmentsSection({ ticketId }) {
 
   const inactivarAdjunto = async (id) => {
     const confirmar = await confirmarAccion(
-  "Esta acción eliminara el adjunto seleccionado.",
-  "¿Deseas continuar?"
-  );
+      "Esta acción eliminará el adjunto seleccionado.",
+      "¿Deseas continuar?"
+    );
 
     if (!confirmar) {
       return;
@@ -128,25 +129,28 @@ function TicketAttachmentsSection({ ticketId }) {
       await inactivarAdjuntoTicket(id);
 
       await cargarAdjuntos();
-       await mostrarExito("Adjunto eliminado correctamente.");
+      await mostrarExito("Adjunto eliminado correctamente.");
     } catch (err) {
       console.error(err);
-      await mostrarError("No se puedo eliminar adjunto.");
+      await mostrarError("No se pudo eliminar el adjunto.");
     }
   };
 
   return (
-    <section className="rounded-2xl bg-white p-6 shadow">
+    <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
       <div className="mb-5">
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
           Adjuntos
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Registro de archivos asociados al ticket.
         </p>
       </div>
 
-      <form onSubmit={registrarAdjunto} className="mb-6 grid gap-4 md:grid-cols-2">
+      <form
+        onSubmit={registrarAdjunto}
+        className="mb-6 grid gap-4 md:grid-cols-2"
+      >
         <InputAdjunto
           label="Nombre original"
           name="nombreOriginal"
@@ -192,7 +196,7 @@ function TicketAttachmentsSection({ ticketId }) {
           <button
             type="submit"
             disabled={guardando}
-            className="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
           >
             {guardando ? "Guardando..." : "Registrar adjunto"}
           </button>
@@ -200,19 +204,19 @@ function TicketAttachmentsSection({ ticketId }) {
       </form>
 
       {error && (
-        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </div>
       )}
 
       {cargando && (
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Cargando adjuntos...
         </p>
       )}
 
       {!cargando && adjuntos.length === 0 && (
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Este ticket todavía no tiene adjuntos registrados.
         </p>
       )}
@@ -222,24 +226,24 @@ function TicketAttachmentsSection({ ticketId }) {
           {adjuntos.map((adjunto) => (
             <article
               key={adjunto.id}
-              className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 p-4"
+              className="flex items-center justify-between gap-4 rounded-xl border border-slate-200 p-4 dark:border-slate-800 dark:bg-slate-950/40"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                   <FileText size={18} />
                 </div>
 
                 <div>
-                  <p className="font-medium text-slate-900">
+                  <p className="font-medium text-slate-900 dark:text-white">
                     {adjunto.nombreOriginal}
                   </p>
 
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {adjunto.tipoContenido || "Sin tipo"} ·{" "}
                     {formatearTamanio(adjunto.tamanioBytes)}
                   </p>
 
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-400 dark:text-slate-500">
                     Registrado: {formatearFecha(adjunto.fechaCreacion)}
                   </p>
                 </div>
@@ -248,7 +252,7 @@ function TicketAttachmentsSection({ ticketId }) {
               <button
                 type="button"
                 onClick={() => inactivarAdjunto(adjunto.id)}
-                className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50"
+                className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 dark:border-red-900/60 dark:text-red-300 dark:hover:bg-red-950/40"
               >
                 <Trash2 size={16} />
               </button>
@@ -270,7 +274,7 @@ function InputAdjunto({
 }) {
   return (
     <div>
-      <label className="mb-2 block text-sm font-medium text-slate-700">
+      <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
         {label}
       </label>
 
@@ -280,7 +284,7 @@ function InputAdjunto({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
-        className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+        className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400"
       />
     </div>
   );

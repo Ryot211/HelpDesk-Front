@@ -44,22 +44,25 @@ function DashboardPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
           Dashboard
         </h1>
-        <p className="text-slate-600">
+
+        <p className="text-slate-600 dark:text-slate-400">
           Resumen general del sistema HelpDesk.
         </p>
       </div>
 
       {cargando && (
-        <div className="rounded-2xl bg-white p-6 shadow">
-          <p className="text-slate-600">Cargando dashboard...</p>
+        <div className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
+          <p className="text-slate-600 dark:text-slate-400">
+            Cargando dashboard...
+          </p>
         </div>
       )}
 
       {error && (
-        <div className="rounded-2xl bg-red-50 p-6 text-red-700 shadow">
+        <div className="rounded-2xl bg-red-50 p-6 text-red-700 shadow dark:bg-red-950/40 dark:text-red-300">
           {error}
         </div>
       )}
@@ -117,13 +120,13 @@ function DashboardPage() {
             />
           </div>
 
-          <div className="mt-6 rounded-2xl bg-white p-6 shadow">
-            <h2 className="text-lg font-semibold text-slate-900">
+          <div className="mt-6 rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
+            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
               Resumen rápido
             </h2>
 
-            <p className="mt-2 text-sm text-slate-600">
-              Actualmente existen {totalTickets} tickets registrados. 
+            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+              Actualmente existen {totalTickets} tickets registrados.
               De ellos, {enProceso} están en proceso y {cerrados} se encuentran cerrados.
             </p>
           </div>
@@ -135,24 +138,24 @@ function DashboardPage() {
 
 function DashboardCard({ title, value, description, icon: Icon }) {
   return (
-    <div className="rounded-2xl bg-white p-5 shadow">
+    <div className="rounded-2xl bg-white p-5 shadow dark:bg-slate-900">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-500">
+          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
             {title}
           </p>
 
-          <h2 className="mt-2 text-3xl font-bold text-slate-900">
+          <h2 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
             {value}
           </h2>
         </div>
 
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
           <Icon size={22} />
         </div>
       </div>
 
-      <p className="mt-4 text-sm text-slate-500">
+      <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
         {description}
       </p>
     </div>

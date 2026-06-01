@@ -94,11 +94,11 @@ function TicketCreatePage() {
         creadoPorId: USUARIO_PRUEBA_ID,
       };
 
-    const response = await crearTicket(data);
+      const response = await crearTicket(data);
 
-    await mostrarExito("Ticket creado correctamente.");
+      await mostrarExito("Ticket creado correctamente.");
 
-    navigate(`/tickets/${response.data.id}`);
+      navigate(`/tickets/${response.data.id}`);
     } catch (err) {
       console.error(err);
       await mostrarError("No se pudo crear el ticket.");
@@ -107,80 +107,80 @@ function TicketCreatePage() {
     }
   };
 
+  const inputClass =
+    "w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400";
+
+  const labelClass =
+    "mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300";
+
   return (
     <div>
       <div className="mb-6">
         <Link
           to="/tickets"
-          className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900"
+          className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
         >
           <ArrowLeft size={16} />
           Volver al listado
         </Link>
 
-        <h1 className="text-3xl font-bold text-slate-900">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
           Nuevo Ticket
         </h1>
 
-        <p className="text-slate-600">
+        <p className="text-slate-600 dark:text-slate-400">
           Registra una nueva solicitud de soporte técnico.
         </p>
       </div>
 
-      <section className="rounded-2xl bg-white p-6 shadow">
+      <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
         {error && (
-          <div className="mb-5 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+          <div className="mb-5 rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
             {error}
           </div>
         )}
 
         {cargandoCatalogos ? (
-          <p className="text-sm text-slate-500">
+          <p className="text-sm text-slate-500 dark:text-slate-400">
             Cargando información del formulario...
           </p>
         ) : (
           <form onSubmit={guardarTicket} className="space-y-5">
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Título
-              </label>
+              <label className={labelClass}>Título</label>
 
               <input
                 type="text"
                 name="titulo"
                 value={formulario.titulo}
                 onChange={manejarCambio}
-                className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                className={inputClass}
                 placeholder="Ejemplo: No puedo ingresar al sistema"
               />
             </div>
 
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">
-                Descripción
-              </label>
+              <label className={labelClass}>Descripción</label>
 
               <textarea
                 name="descripcion"
                 value={formulario.descripcion}
                 onChange={manejarCambio}
                 rows="5"
-                className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                className={inputClass}
                 placeholder="Describe el problema con el mayor detalle posible..."
               />
             </div>
 
             <div className="grid gap-5 md:grid-cols-3">
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">
-                  Prioridad
-                </label>
+                <label className={labelClass}>Prioridad</label>
 
                 <select
                   name="prioridad"
                   value={formulario.prioridad}
                   onChange={manejarCambio}
-                  className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                  className={inputClass}
                 >
                   <option value={TICKET_PRIORIDADES.BAJA}>BAJA</option>
                   <option value={TICKET_PRIORIDADES.MEDIA}>MEDIA</option>
@@ -190,15 +190,13 @@ function TicketCreatePage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">
-                  Categoría
-                </label>
+                <label className={labelClass}>Categoría</label>
 
                 <select
                   name="categoriaId"
                   value={formulario.categoriaId}
                   onChange={manejarCambio}
-                  className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                  className={inputClass}
                 >
                   <option value="">Selecciona una categoría</option>
 
@@ -211,15 +209,13 @@ function TicketCreatePage() {
               </div>
 
               <div>
-                <label className="mb-2 block text-sm font-medium text-slate-700">
-                  Departamento
-                </label>
+                <label className={labelClass}>Departamento</label>
 
                 <select
                   name="departamentoSolicitanteId"
                   value={formulario.departamentoSolicitanteId}
                   onChange={manejarCambio}
-                  className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                  className={inputClass}
                 >
                   <option value="">Selecciona un departamento</option>
 
@@ -235,7 +231,7 @@ function TicketCreatePage() {
             <div className="flex justify-end gap-3">
               <Link
                 to="/tickets"
-                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
+                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
               >
                 Cancelar
               </Link>
@@ -243,7 +239,7 @@ function TicketCreatePage() {
               <button
                 type="submit"
                 disabled={guardando}
-                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
               >
                 <Save size={18} />
                 {guardando ? "Guardando..." : "Guardar ticket"}

@@ -39,7 +39,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
       setUsuarios(response.data);
     } catch (err) {
       console.error(err);
-       await mostrarError("No se pudieron cargar los usuarios.");
+      await mostrarError("No se pudieron cargar los usuarios.");
     } finally {
       setCargandoUsuarios(false);
     }
@@ -141,39 +141,51 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
     }
   };
 
+  const formCardClass =
+    "rounded-xl border border-slate-200 p-4 dark:border-slate-800 dark:bg-slate-950/40";
+
+  const labelClass =
+    "mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300";
+
+  const inputClass =
+    "flex-1 rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 disabled:cursor-not-allowed disabled:bg-slate-100 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:focus:border-slate-400 dark:focus:ring-slate-400 dark:disabled:bg-slate-800";
+
+  const buttonClass =
+    "rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200";
+
   return (
-    <section className="rounded-2xl bg-white p-6 shadow">
+    <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
       <div className="mb-5">
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
           Acciones del ticket
         </h2>
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Asigna, cambia estado o cierra el ticket.
         </p>
       </div>
 
       {mensaje && (
-        <div className="mb-4 rounded-xl bg-green-50 p-3 text-sm text-green-700">
+        <div className="mb-4 rounded-xl bg-green-50 p-3 text-sm text-green-700 dark:bg-green-950/40 dark:text-green-300">
           {mensaje}
         </div>
       )}
 
       {error && (
-        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </div>
       )}
 
       <div className="space-y-6">
-        <form onSubmit={asignar} className="rounded-xl border border-slate-200 p-4">
+        <form onSubmit={asignar} className={formCardClass}>
           <div className="mb-3 flex items-center gap-2">
-            <UserPlus size={18} className="text-slate-700" />
-            <h3 className="font-semibold text-slate-900">
+            <UserPlus size={18} className="text-slate-700 dark:text-slate-300" />
+            <h3 className="font-semibold text-slate-900 dark:text-white">
               Asignar responsable
             </h3>
           </div>
 
-          <label className="mb-2 block text-sm font-medium text-slate-700">
+          <label className={labelClass}>
             Usuario soporte
           </label>
 
@@ -182,7 +194,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
               value={asignadoId}
               onChange={(event) => setAsignadoId(event.target.value)}
               disabled={cargandoUsuarios}
-              className="flex-1 rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 disabled:cursor-not-allowed disabled:bg-slate-100"
+              className={inputClass}
             >
               <option value="">
                 {cargandoUsuarios ? "Cargando usuarios..." : "Selecciona un usuario"}
@@ -198,22 +210,22 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
             <button
               type="submit"
               disabled={procesando}
-              className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className={buttonClass}
             >
               Asignar
             </button>
           </div>
         </form>
 
-        <form onSubmit={cambiarEstado} className="rounded-xl border border-slate-200 p-4">
+        <form onSubmit={cambiarEstado} className={formCardClass}>
           <div className="mb-3 flex items-center gap-2">
-            <RefreshCcw size={18} className="text-slate-700" />
-            <h3 className="font-semibold text-slate-900">
+            <RefreshCcw size={18} className="text-slate-700 dark:text-slate-300" />
+            <h3 className="font-semibold text-slate-900 dark:text-white">
               Cambiar estado
             </h3>
           </div>
 
-          <label className="mb-2 block text-sm font-medium text-slate-700">
+          <label className={labelClass}>
             Estado
           </label>
 
@@ -221,7 +233,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
             <select
               value={estado}
               onChange={(event) => setEstado(event.target.value)}
-              className="flex-1 rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+              className={inputClass}
             >
               <option value="">Selecciona un estado</option>
               <option value={TICKET_ESTADOS.REGISTRADO}>REGISTRADO</option>
@@ -236,22 +248,22 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
             <button
               type="submit"
               disabled={procesando}
-              className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className={buttonClass}
             >
               Cambiar
             </button>
           </div>
         </form>
 
-        <form onSubmit={cerrarConSolucion} className="rounded-xl border border-slate-200 p-4">
+        <form onSubmit={cerrarConSolucion} className={formCardClass}>
           <div className="mb-3 flex items-center gap-2">
-            <CheckCircle size={18} className="text-slate-700" />
-            <h3 className="font-semibold text-slate-900">
+            <CheckCircle size={18} className="text-slate-700 dark:text-slate-300" />
+            <h3 className="font-semibold text-slate-900 dark:text-white">
               Cerrar con solución
             </h3>
           </div>
 
-          <label className="mb-2 block text-sm font-medium text-slate-700">
+          <label className={labelClass}>
             Solución
           </label>
 
@@ -259,7 +271,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
             value={solucion}
             onChange={(event) => setSolucion(event.target.value)}
             rows="3"
-            className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+            className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400"
             placeholder="Describe la solución aplicada..."
           />
 
@@ -267,7 +279,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
             <button
               type="submit"
               disabled={procesando}
-              className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+              className={buttonClass}
             >
               Cerrar ticket
             </button>

@@ -6,10 +6,8 @@ import {
 import { formatearFecha } from "../../utils/formatters";
 import { TIPO_COMENTARIO, USUARIO_PRUEBA_ID } from "../../utils/constantes";
 import {
-  confirmarAccion,
   mostrarError,
   mostrarExito,
-  mostrarAdvertencia
 } from "../../utils/alerts";
 
 function TicketCommentsSection({ ticketId }) {
@@ -64,28 +62,29 @@ function TicketCommentsSection({ ticketId }) {
 
       setComentarioTexto("");
       await cargarComentarios();
-      await mostrarExito("Comentario agregado correctamente");
+      await mostrarExito("Comentario agregado correctamente.");
     } catch (err) {
       console.error(err);
-      setError("No se pudo registrar el comentario.");
+      await mostrarError("No se pudo registrar el comentario.");
     } finally {
       setGuardando(false);
     }
   };
 
   return (
-    <section className="rounded-2xl bg-white p-6 shadow">
+    <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
       <div className="mb-5">
-        <h2 className="text-lg font-semibold text-slate-900">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
           Comentarios
         </h2>
-        <p className="text-sm text-slate-500">
+
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Registro de observaciones realizadas sobre el ticket.
         </p>
       </div>
 
       <form onSubmit={enviarComentario} className="mb-6">
-        <label className="mb-2 block text-sm font-medium text-slate-700">
+        <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
           Nuevo comentario
         </label>
 
@@ -93,7 +92,7 @@ function TicketCommentsSection({ ticketId }) {
           value={comentarioTexto}
           onChange={(event) => setComentarioTexto(event.target.value)}
           rows="3"
-          className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+          className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400"
           placeholder="Escribe un comentario sobre el ticket..."
         />
 
@@ -101,7 +100,7 @@ function TicketCommentsSection({ ticketId }) {
           <button
             type="submit"
             disabled={guardando}
-            className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60"
+            className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
           >
             {guardando ? "Guardando..." : "Agregar comentario"}
           </button>
@@ -109,19 +108,19 @@ function TicketCommentsSection({ ticketId }) {
       </form>
 
       {error && (
-        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700">
+        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
           {error}
         </div>
       )}
 
       {cargando && (
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Cargando comentarios...
         </p>
       )}
 
       {!cargando && comentarios.length === 0 && (
-        <p className="text-sm text-slate-500">
+        <p className="text-sm text-slate-500 dark:text-slate-400">
           Este ticket todavía no tiene comentarios.
         </p>
       )}
@@ -131,24 +130,25 @@ function TicketCommentsSection({ ticketId }) {
           {comentarios.map((comentario) => (
             <article
               key={comentario.id}
-              className="rounded-xl border border-slate-200 p-4"
+              className="rounded-xl border border-slate-200 p-4 dark:border-slate-800 dark:bg-slate-950/40"
             >
               <div className="mb-2 flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-slate-900">
+                  <p className="font-medium text-slate-900 dark:text-white">
                     {obtenerNombreUsuario(comentario.usuario)}
                   </p>
-                  <p className="text-xs text-slate-500">
+
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {formatearFecha(comentario.fechaCreacion)}
                   </p>
                 </div>
 
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700">
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
                   {comentario.tipo}
                 </span>
               </div>
 
-              <p className="whitespace-pre-line text-sm text-slate-700">
+              <p className="whitespace-pre-line text-sm text-slate-700 dark:text-slate-300">
                 {comentario.comentario}
               </p>
             </article>

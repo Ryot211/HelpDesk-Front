@@ -21,7 +21,7 @@ function Sidebar() {
   ];
 
   return (
-    <aside className="min-h-screen w-64 bg-slate-950 text-white">
+    <aside className="min-h-screen w-64 bg-slate-950 text-white dark:bg-black">
       <div className="border-b border-slate-800 p-6">
         <h1 className="text-xl font-bold">HelpDesk</h1>
         <p className="mt-1 text-sm text-slate-400">
