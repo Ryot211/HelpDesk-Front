@@ -129,22 +129,22 @@ function TicketDetailPage() {
 
             <InfoItem
               label="Departamento"
-              value={ticket.departamentoSolicitante?.nombre || "Sin departamento"}
+              value={ticket.departamento?.nombre || "Sin departamento"}
             />
 
             <InfoItem
               label="Creado por"
-              value={obtenerNombreUsuario(ticket.creadoPor)}
+              value={obtenerNombreUsuario(ticket.usuarioCreacion)}
             />
 
             <InfoItem
               label="Asignado a"
-              value={obtenerNombreUsuario(ticket.asignadoA)}
+              value={obtenerNombreUsuario(ticket.usuarioAsignado)}
             />
 
             <InfoItem
               label="Cerrado por"
-              value={obtenerNombreUsuario(ticket.cerradoPor)}
+              value={obtenerNombreUsuario(ticket.usuarioFinalizado)}
             />
 
             <InfoItem

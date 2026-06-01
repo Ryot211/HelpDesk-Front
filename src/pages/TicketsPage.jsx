@@ -1,15 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { Eye, Plus } from "lucide-react";
+import { Eye, Plus, Search } from "lucide-react";
 import { listarTickets } from "../api/ticketApi";
 import TicketStatusBadge from "../components/tickets/TicketStatusBadge";
 import TicketPriorityBadge from "../components/tickets/TicketPriorityBadge";
 import { formatearFecha } from "../utils/formatters";
+import { TICKET_ESTADOS } from "../utils/constantes";
 
 function TicketsPage() {
   const [tickets, setTickets] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState("");
+
+  const [busqueda, setBusqueda] = useState("");
+  const [estadoFiltro, setEstadoFiltro] = useState("");
 
   useEffect(() => {
     cargarTickets();
@@ -30,6 +34,28 @@ function TicketsPage() {
     }
   };
 
+  const ticketsFiltrados = useMemo(() => {
+    return tickets.filter((ticket) => {
+      const textoBusqueda = busqueda.trim().toLowerCase();
+
+      const coincideBusqueda =
+        !textoBusqueda ||
+        ticket.codigo?.toLowerCase().includes(textoBusqueda) ||
+        ticket.titulo?.toLowerCase().includes(textoBusqueda) ||
+        ticket.categoria?.nombre?.toLowerCase().includes(textoBusqueda);
+
+      const coincideEstado =
+        !estadoFiltro || ticket.estado === estadoFiltro;
+
+      return coincideBusqueda && coincideEstado;
+    });
+  }, [tickets, busqueda, estadoFiltro]);
+
+  const limpiarFiltros = () => {
+    setBusqueda("");
+    setEstadoFiltro("");
+  };
+
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
@@ -47,6 +73,74 @@ function TicketsPage() {
           <Plus size={18} />
           Nuevo ticket
         </Link>
+      </div>
+
+      <div className="mb-5 rounded-2xl bg-white p-5 shadow">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="md:col-span-2">
+            <label className="mb-2 block text-sm font-medium text-slate-700">
+              Buscar ticket
+            </label>
+
+            <div className="relative">
+              <Search
+                size={18}
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400"
+              />
+
+              <input
+                type="text"
+                value={busqueda}
+                onChange={(event) => setBusqueda(event.target.value)}
+                className="w-full rounded-xl border border-slate-300 py-3 pl-10 pr-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+                placeholder="Buscar por código, título o categoría..."
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-slate-700">
+              Estado
+            </label>
+
+            <select
+              value={estadoFiltro}
+              onChange={(event) => setEstadoFiltro(event.target.value)}
+              className="w-full rounded-xl border border-slate-300 p-3 text-sm outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900"
+            >
+              <option value="">Todos los estados</option>
+              <option value={TICKET_ESTADOS.REGISTRADO}>REGISTRADO</option>
+              <option value={TICKET_ESTADOS.ASIGNADO}>ASIGNADO</option>
+              <option value={TICKET_ESTADOS.EN_PROCESO}>EN_PROCESO</option>
+              <option value={TICKET_ESTADOS.RESUELTO}>RESUELTO</option>
+              <option value={TICKET_ESTADOS.CERRADO}>CERRADO</option>
+              <option value={TICKET_ESTADOS.ANULADO}>ANULADO</option>
+              <option value={TICKET_ESTADOS.REABIERTO}>REABIERTO</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4">
+          <p className="text-sm text-slate-600">
+            Mostrando{" "}
+            <span className="font-semibold text-slate-900">
+              {ticketsFiltrados.length}
+            </span>{" "}
+            de{" "}
+            <span className="font-semibold text-slate-900">
+              {tickets.length}
+            </span>{" "}
+            tickets.
+          </p>
+
+          <button
+            type="button"
+            onClick={limpiarFiltros}
+            className="text-sm font-medium text-slate-600 hover:text-slate-900"
+          >
+            Limpiar filtros
+          </button>
+        </div>
       </div>
 
       {cargando && (
@@ -76,15 +170,15 @@ function TicketsPage() {
             </thead>
 
             <tbody>
-              {tickets.length === 0 && (
+              {ticketsFiltrados.length === 0 && (
                 <tr>
                   <td colSpan="6" className="p-4 text-center text-slate-500">
-                    No existen tickets registrados.
+                    No existen tickets con los filtros aplicados.
                   </td>
                 </tr>
               )}
 
-              {tickets.map((ticket) => (
+              {ticketsFiltrados.map((ticket) => (
                 <tr key={ticket.id} className="border-b hover:bg-slate-50">
                   <td className="p-3 font-medium text-slate-900">
                     {ticket.codigo}
@@ -115,6 +209,7 @@ function TicketsPage() {
                       className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100"
                     >
                       <Eye size={16} />
+                      Ver
                     </Link>
                   </td>
                 </tr>
