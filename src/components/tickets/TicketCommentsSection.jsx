@@ -5,6 +5,12 @@ import {
 } from "../../api/ticketApi";
 import { formatearFecha } from "../../utils/formatters";
 import { TIPO_COMENTARIO, USUARIO_PRUEBA_ID } from "../../utils/constantes";
+import {
+  confirmarAccion,
+  mostrarError,
+  mostrarExito,
+  mostrarAdvertencia
+} from "../../utils/alerts";
 
 function TicketCommentsSection({ ticketId }) {
   const [comentarios, setComentarios] = useState([]);
@@ -29,7 +35,7 @@ function TicketCommentsSection({ ticketId }) {
       setComentarios(response.data);
     } catch (err) {
       console.error(err);
-      setError("No se pudieron cargar los comentarios.");
+      await mostrarError("No se pudieron cargar los comentarios.");
     } finally {
       setCargando(false);
     }
@@ -39,7 +45,7 @@ function TicketCommentsSection({ ticketId }) {
     event.preventDefault();
 
     if (!comentarioTexto.trim()) {
-      setError("El comentario no puede estar vacío.");
+      await mostrarError("Debes ingresar un comentario para poder agregarlo.");
       return;
     }
 
@@ -58,6 +64,7 @@ function TicketCommentsSection({ ticketId }) {
 
       setComentarioTexto("");
       await cargarComentarios();
+      await mostrarExito("Comentario agregado correctamente");
     } catch (err) {
       console.error(err);
       setError("No se pudo registrar el comentario.");

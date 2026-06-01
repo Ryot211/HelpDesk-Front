@@ -5,6 +5,7 @@ import { crearTicket } from "../api/ticketApi";
 import { listarCategoriasTicket } from "../api/categoriaTicketApi";
 import { listarDepartamentos } from "../api/departamentoApi";
 import { TICKET_PRIORIDADES, USUARIO_PRUEBA_ID } from "../utils/constantes";
+import { mostrarError, mostrarExito } from "../utils/alerts";
 
 function TicketCreatePage() {
   const navigate = useNavigate();
@@ -42,7 +43,7 @@ function TicketCreatePage() {
       setDepartamentos(departamentosResponse.data);
     } catch (err) {
       console.error(err);
-      setError("No se pudieron cargar las categorías o departamentos.");
+      await mostrarError("No se pudieron cargar las categorías o departamentos.");
     } finally {
       setCargandoCatalogos(false);
     }
@@ -61,22 +62,22 @@ function TicketCreatePage() {
     event.preventDefault();
 
     if (!formulario.titulo.trim()) {
-      setError("El título es obligatorio.");
+      await mostrarError("El título es obligatorio.");
       return;
     }
 
     if (!formulario.descripcion.trim()) {
-      setError("La descripción es obligatoria.");
+      await mostrarError("La descripción es obligatoria.");
       return;
     }
 
     if (!formulario.categoriaId) {
-      setError("Debes seleccionar una categoría.");
+      await mostrarError("Debes seleccionar una categoría.");
       return;
     }
 
     if (!formulario.departamentoSolicitanteId) {
-      setError("Debes seleccionar un departamento.");
+      await mostrarError("Debes seleccionar un departamento.");
       return;
     }
 
@@ -93,12 +94,14 @@ function TicketCreatePage() {
         creadoPorId: USUARIO_PRUEBA_ID,
       };
 
-      const response = await crearTicket(data);
+    const response = await crearTicket(data);
 
-      navigate(`/tickets/${response.data.id}`);
+    await mostrarExito("Ticket creado correctamente.");
+
+    navigate(`/tickets/${response.data.id}`);
     } catch (err) {
       console.error(err);
-      setError("No se pudo crear el ticket.");
+      await mostrarError("No se pudo crear el ticket.");
     } finally {
       setGuardando(false);
     }

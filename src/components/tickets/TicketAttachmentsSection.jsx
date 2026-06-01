@@ -7,6 +7,11 @@ import {
 } from "../../api/ticketApi";
 import { formatearFecha } from "../../utils/formatters";
 import { USUARIO_PRUEBA_ID } from "../../utils/constantes";
+import {
+  confirmarAccion,
+  mostrarError,
+  mostrarExito,
+} from "../../utils/alerts";
 
 function TicketAttachmentsSection({ ticketId }) {
   const [adjuntos, setAdjuntos] = useState([]);
@@ -38,7 +43,7 @@ function TicketAttachmentsSection({ ticketId }) {
       setAdjuntos(response.data);
     } catch (err) {
       console.error(err);
-      setError("No se pudieron cargar los adjuntos.");
+      await mostrarError("No se pudieron cargar los adjuntos.");
     } finally {
       setCargando(false);
     }
@@ -57,17 +62,17 @@ function TicketAttachmentsSection({ ticketId }) {
     event.preventDefault();
 
     if (!formulario.nombreOriginal.trim()) {
-      setError("El nombre original es obligatorio.");
+      await mostrarError("El nombre original es obligatorio.");
       return;
     }
 
     if (!formulario.nombreArchivo.trim()) {
-      setError("El nombre interno del archivo es obligatorio.");
+      await mostrarError("El nombre interno del archivo es obligatorio.");
       return;
     }
 
     if (!formulario.rutaArchivo.trim()) {
-      setError("La ruta del archivo es obligatoria.");
+      await mostrarError("La ruta del archivo es obligatoria.");
       return;
     }
 
@@ -98,16 +103,20 @@ function TicketAttachmentsSection({ ticketId }) {
       });
 
       await cargarAdjuntos();
+       await mostrarExito("Adjunto agregado correctamente.");
     } catch (err) {
       console.error(err);
-      setError("No se pudo agregar el adjunto.");
+      await mostrarError("No se pudo agregar el adjunto.");
     } finally {
       setGuardando(false);
     }
   };
 
   const inactivarAdjunto = async (id) => {
-    const confirmar = window.confirm("¿Deseas eliminar este adjunto?");
+    const confirmar = await confirmarAccion(
+  "Esta acción eliminara el adjunto seleccionado.",
+  "¿Deseas continuar?"
+  );
 
     if (!confirmar) {
       return;
@@ -119,9 +128,10 @@ function TicketAttachmentsSection({ ticketId }) {
       await inactivarAdjuntoTicket(id);
 
       await cargarAdjuntos();
+       await mostrarExito("Adjunto eliminado correctamente.");
     } catch (err) {
       console.error(err);
-      setError("No se puedo eliminar adjunto.");
+      await mostrarError("No se puedo eliminar adjunto.");
     }
   };
 

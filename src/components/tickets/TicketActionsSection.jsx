@@ -7,6 +7,7 @@ import {
 } from "../../api/ticketApi";
 import { listarUsuarios } from "../../api/usuarioApi";
 import { TICKET_ESTADOS, USUARIO_PRUEBA_ID } from "../../utils/constantes";
+import { mostrarAdvertencia, mostrarError, mostrarExito } from "../../utils/alerts";
 
 function TicketActionsSection({ ticket, onTicketUpdated }) {
   const [asignadoId, setAsignadoId] = useState("");
@@ -38,7 +39,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
       setUsuarios(response.data);
     } catch (err) {
       console.error(err);
-      setError("No se pudieron cargar los usuarios.");
+       await mostrarError("No se pudieron cargar los usuarios.");
     } finally {
       setCargandoUsuarios(false);
     }
@@ -48,7 +49,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
     event.preventDefault();
 
     if (!asignadoId) {
-      setError("Debes seleccionar el usuario asignado.");
+      await mostrarAdvertencia("Debes seleccionar el usuario asignado.");
       return;
     }
 
@@ -64,13 +65,13 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
 
       await asignarTicket(data);
 
-      setMensaje("Ticket asignado correctamente.");
+      await mostrarExito("Ticket asignado correctamente.");
       setAsignadoId("");
 
       await onTicketUpdated();
     } catch (err) {
       console.error(err);
-      setError("No se pudo asignar el ticket.");
+      await mostrarError("No se pudo asignar el ticket.");
     } finally {
       setProcesando(false);
     }
@@ -80,7 +81,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
     event.preventDefault();
 
     if (!estado) {
-      setError("Debes seleccionar un estado.");
+      await mostrarAdvertencia("Debes seleccionar un estado.");
       return;
     }
 
@@ -96,12 +97,12 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
 
       await cambiarEstadoTicket(data);
 
-      setMensaje("Estado actualizado correctamente.");
+      await mostrarExito("Estado actualizado correctamente.");
 
       await onTicketUpdated();
     } catch (err) {
       console.error(err);
-      setError("No se pudo cambiar el estado del ticket.");
+      await mostrarError("No se pudo cambiar el estado del ticket.");
     } finally {
       setProcesando(false);
     }
@@ -111,7 +112,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
     event.preventDefault();
 
     if (!solucion.trim()) {
-      setError("Debes ingresar una solución para cerrar el ticket.");
+      await mostrarAdvertencia("Debes ingresar una solución para cerrar el ticket.");
       return;
     }
 
@@ -128,13 +129,13 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
 
       await cerrarTicket(data);
 
-      setMensaje("Ticket cerrado correctamente.");
+      await mostrarExito("Ticket cerrado correctamente.");
       setSolucion("");
 
       await onTicketUpdated();
     } catch (err) {
       console.error(err);
-      setError("No se pudo cerrar el ticket.");
+      await mostrarError("No se pudo cerrar el ticket.");
     } finally {
       setProcesando(false);
     }
