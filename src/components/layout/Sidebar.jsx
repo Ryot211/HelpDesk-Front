@@ -1,5 +1,6 @@
 import { LayoutDashboard, Ticket, PlusCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
+import { Tags } from "lucide-react";
 
 function Sidebar() {
   const menuItems = [
@@ -18,6 +19,11 @@ function Sidebar() {
       path: "/tickets/nuevo",
       icon: PlusCircle,
     },
+    {
+        label: "Categorías",
+        path: "/categorias-ticket",
+        icon: Tags,
+      }
   ];
 
   return (

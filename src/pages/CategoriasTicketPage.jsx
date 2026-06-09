@@ -1,0 +1,318 @@
+import { useEffect, useState } from "react";
+import { Edit, Plus, Trash2, X } from "lucide-react";
+import {
+  guardarCategoriaTicket,
+  inactivarCategoriaTicket,
+  listarCategoriasTicket,
+} from "../api/categoriaTicketApi";
+import {
+  confirmarAccion,
+  mostrarError,
+  mostrarExito,
+  mostrarAdvertencia,
+} from "../utils/alerts";
+
+function CategoriasTicketPage() {
+  const [categorias, setCategorias] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [guardando, setGuardando] = useState(false);
+
+  const [formularioVisible, setFormularioVisible] = useState(false);
+
+  const [formulario, setFormulario] = useState({
+    id: null,
+    nombre: "",
+    descripcion: "",
+  });
+
+  useEffect(() => {
+    cargarCategorias();
+  }, []);
+
+  const cargarCategorias = async () => {
+    try {
+      setCargando(true);
+
+      const response = await listarCategoriasTicket();
+
+      setCategorias(response.data);
+    } catch (err) {
+      console.error(err);
+      await mostrarError("No se pudieron cargar las categorías.");
+    } finally {
+      setCargando(false);
+    }
+  };
+
+  const manejarCambio = (event) => {
+    const { name, value } = event.target;
+
+    setFormulario({
+      ...formulario,
+      [name]: value,
+    });
+  };
+
+  const limpiarFormulario = () => {
+    setFormulario({
+      id: null,
+      nombre: "",
+      descripcion: "",
+    });
+
+    setFormularioVisible(false);
+  };
+
+  const nuevaCategoria = () => {
+    setFormulario({
+      id: null,
+      nombre: "",
+      descripcion: "",
+    });
+
+    setFormularioVisible(true);
+  };
+
+  const editarCategoria = (categoria) => {
+    setFormulario({
+      id: categoria.id,
+      nombre: categoria.nombre || "",
+      descripcion: categoria.descripcion || "",
+    });
+
+    setFormularioVisible(true);
+  };
+
+  const guardarCategoria = async (event) => {
+    event.preventDefault();
+
+    if (!formulario.nombre.trim()) {
+      await mostrarAdvertencia("El nombre de la categoría es obligatorio.");
+      return;
+    }
+
+    try {
+      setGuardando(true);
+
+      const data = {
+        id: formulario.id,
+        nombre: formulario.nombre.trim(),
+        descripcion: formulario.descripcion.trim(),
+      };
+
+      await guardarCategoriaTicket(data);
+
+      await mostrarExito(
+        formulario.id
+          ? "Categoría actualizada correctamente."
+          : "Categoría creada correctamente."
+      );
+
+      limpiarFormulario();
+      await cargarCategorias();
+    } catch (err) {
+      console.error(err);
+      await mostrarError("No se pudo guardar la categoría.");
+    } finally {
+      setGuardando(false);
+    }
+  };
+
+  const inactivarCategoria = async (id) => {
+    const confirmar = await confirmarAccion(
+      "Esta acción inactivará la categoría seleccionada.",
+      "¿Deseas continuar?"
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    try {
+      await inactivarCategoriaTicket(id);
+
+      await mostrarExito("Categoría inactivada correctamente.");
+
+      await cargarCategorias();
+    } catch (err) {
+      console.error(err);
+      await mostrarError("No se pudo inactivar la categoría.");
+    }
+  };
+
+  const inputClass =
+    "w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400";
+
+  const labelClass =
+    "mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300";
+
+  return (
+    <div>
+      <div className="mb-6 flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+            Categorías de Ticket
+          </h1>
+
+          <p className="text-slate-600 dark:text-slate-400">
+            Administra las categorías usadas para clasificar tickets.
+          </p>
+        </div>
+
+        <button
+          type="button"
+          onClick={nuevaCategoria}
+          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+        >
+          <Plus size={18} />
+          Nueva categoría
+        </button>
+      </div>
+
+      {formularioVisible && (
+        <section className="mb-6 rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
+          <div className="mb-5 flex items-center justify-between">
+            <div>
+              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                {formulario.id ? "Editar categoría" : "Nueva categoría"}
+              </h2>
+
+              <p className="text-sm text-slate-500 dark:text-slate-400">
+                Completa la información de la categoría.
+              </p>
+            </div>
+
+            <button
+              type="button"
+              onClick={limpiarFormulario}
+              className="rounded-lg p-2 text-slate-500 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-slate-800 dark:hover:text-white"
+            >
+              <X size={18} />
+            </button>
+          </div>
+
+          <form onSubmit={guardarCategoria} className="grid gap-4 md:grid-cols-2">
+            <div>
+              <label className={labelClass}>Nombre</label>
+
+              <input
+                type="text"
+                name="nombre"
+                value={formulario.nombre}
+                onChange={manejarCambio}
+                className={inputClass}
+                placeholder="Ejemplo: Error de sistema"
+              />
+            </div>
+
+            <div>
+              <label className={labelClass}>Descripción</label>
+
+              <input
+                type="text"
+                name="descripcion"
+                value={formulario.descripcion}
+                onChange={manejarCambio}
+                className={inputClass}
+                placeholder="Descripción de la categoría"
+              />
+            </div>
+
+            <div className="md:col-span-2 flex justify-end gap-3">
+              <button
+                type="button"
+                onClick={limpiarFormulario}
+                className="rounded-xl border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+              >
+                Cancelar
+              </button>
+
+              <button
+                type="submit"
+                disabled={guardando}
+                className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+              >
+                {guardando ? "Guardando..." : "Guardar"}
+              </button>
+            </div>
+          </form>
+        </section>
+      )}
+
+      <section className="overflow-hidden rounded-2xl bg-white shadow dark:bg-slate-900">
+        {cargando ? (
+          <p className="p-6 text-sm text-slate-500 dark:text-slate-400">
+            Cargando categorías...
+          </p>
+        ) : (
+          <table className="w-full border-collapse">
+            <thead className="bg-slate-900 text-white dark:bg-black">
+              <tr>
+                <th className="p-3 text-left text-sm">Nombre</th>
+                <th className="p-3 text-left text-sm">Descripción</th>
+                <th className="p-3 text-left text-sm">Estado</th>
+                <th className="p-3 text-right text-sm">Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {categorias.length === 0 && (
+                <tr>
+                  <td
+                    colSpan="4"
+                    className="p-4 text-center text-slate-500 dark:text-slate-400"
+                  >
+                    No existen categorías registradas.
+                  </td>
+                </tr>
+              )}
+
+              {categorias.map((categoria) => (
+                <tr
+                  key={categoria.id}
+                  className="border-b border-slate-100 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60"
+                >
+                  <td className="p-3 font-medium text-slate-900 dark:text-white">
+                    {categoria.nombre}
+                  </td>
+
+                  <td className="p-3 text-slate-700 dark:text-slate-300">
+                    {categoria.descripcion || "Sin descripción"}
+                  </td>
+
+                  <td className="p-3 text-slate-700 dark:text-slate-300">
+                    {categoria.estadoRegistro || "Sin estado"}
+                  </td>
+
+                  <td className="p-3 text-right">
+                    <div className="inline-flex gap-2">
+                      <button
+                        type="button"
+                        onClick={() => editarCategoria(categoria)}
+                        className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                      >
+                        <Edit size={16} />
+                        Editar
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => inactivarCategoria(categoria.id)}
+                        className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 dark:border-red-900/60 dark:text-red-300 dark:hover:bg-red-950/40"
+                      >
+                        <Trash2 size={16} />
+                        Inactivar
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </section>
+    </div>
+  );
+}
+
+export default CategoriasTicketPage;

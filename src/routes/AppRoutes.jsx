@@ -5,6 +5,7 @@ import TicketsPage from "../pages/TicketsPage";
 import TicketCreatePage from "../pages/TicketCreatePage";
 import TicketDetailPage from "../pages/TicketDetailPage";
 import NotFoundPage from "../pages/NotFoundPage";
+import CategoriasTicketPage from "../pages/CategoriasTicketPage";
 
 function AppRoutes() {
   return (
@@ -16,6 +17,7 @@ function AppRoutes() {
           <Route path="tickets" element={<TicketsPage />} />
           <Route path="tickets/nuevo" element={<TicketCreatePage />} />
           <Route path="tickets/:id" element={<TicketDetailPage />} />
+          <Route path="categorias-ticket" element={<CategoriasTicketPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
