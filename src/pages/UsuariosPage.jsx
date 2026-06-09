@@ -1,9 +1,15 @@
 import { useEffect, useState } from "react";
-import { Edit, Plus, X, UserPlus } from "lucide-react";
-import {  actualizarUsuario,crearUsuario, listarUsuarios,} from "../api/usuarioApi";
+import { Edit, Plus, X,Trash2,UserPlus } from "lucide-react";
+import {
+  actualizarUsuario,
+  crearUsuario,
+  inactivarUsuario,
+  listarUsuarios,
+} from "../api/usuarioApi";
 import { listarRoles } from "../api/rolApi";
 import { listarDepartamentos } from "../api/departamentoApi";
 import {
+  confirmarAccion,
   mostrarError,
   mostrarExito,
   mostrarAdvertencia,
@@ -176,7 +182,32 @@ if (formulario.id) {
 } finally {
   setGuardando(false);
 }
+
+};
+
+  const inactivar = async (id) => {
+    const confirmar = await confirmarAccion(
+      "Esta acción inactivará el usuario seleccionado.",
+      "¿Deseas continuar?"
+    );
+
+    if (!confirmar) {
+      return;
+    }
+
+    try {
+      await inactivarUsuario(id);
+
+      await mostrarExito("Usuario inactivado correctamente.");
+
+      await cargarDatos();
+    } catch (err) {
+      console.error(err);
+      await mostrarError("No se pudo inactivar el usuario.");
+    }
   };
+
+
 
   const inputClass =
     "w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400";
@@ -410,7 +441,8 @@ if (formulario.id) {
                     {usuario.estadoRegistro || "Sin estado"}
                 </td>
 
-                <td className="p-3 text-right">
+               <td className="p-3 text-right">
+                <div className="inline-flex gap-2">
                     <button
                     type="button"
                     onClick={() => editarUsuario(usuario)}
@@ -419,6 +451,16 @@ if (formulario.id) {
                     <Edit size={16} />
                     Editar
                     </button>
+
+                    <button
+                    type="button"
+                    onClick={() => inactivar(usuario.id)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 dark:border-red-900/60 dark:text-red-300 dark:hover:bg-red-950/40"
+                    >
+                    <Trash2 size={16} />
+                    Inactivar
+                    </button>
+                </div>
                 </td>
                 </tr>
             ))}
