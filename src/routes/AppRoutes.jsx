@@ -6,6 +6,7 @@ import TicketCreatePage from "../pages/TicketCreatePage";
 import TicketDetailPage from "../pages/TicketDetailPage";
 import NotFoundPage from "../pages/NotFoundPage";
 import CategoriasTicketPage from "../pages/CategoriasTicketPage";
+import DepartamentosPage from "../pages/DepartamentosPage";
 
 function AppRoutes() {
   return (
@@ -18,6 +19,7 @@ function AppRoutes() {
           <Route path="tickets/nuevo" element={<TicketCreatePage />} />
           <Route path="tickets/:id" element={<TicketDetailPage />} />
           <Route path="categorias-ticket" element={<CategoriasTicketPage />} />
+          <Route path="departamentos" element={<DepartamentosPage />} />
         </Route>
 
         <Route path="*" element={<NotFoundPage />} />
