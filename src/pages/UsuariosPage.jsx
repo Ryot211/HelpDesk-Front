@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Plus, X, UserPlus } from "lucide-react";
-import { crearUsuario, listarUsuarios } from "../api/usuarioApi";
+import { Edit, Plus, X, UserPlus } from "lucide-react";
+import {  actualizarUsuario,crearUsuario, listarUsuarios,} from "../api/usuarioApi";
 import { listarRoles } from "../api/rolApi";
 import { listarDepartamentos } from "../api/departamentoApi";
 import {
@@ -8,6 +8,7 @@ import {
   mostrarExito,
   mostrarAdvertencia,
 } from "../utils/alerts";
+
 
 function UsuariosPage() {
   const [usuarios, setUsuarios] = useState([]);
@@ -17,16 +18,16 @@ function UsuariosPage() {
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [formularioVisible, setFormularioVisible] = useState(false);
-
-  const [formulario, setFormulario] = useState({
-    rolId: "",
-    departamentoId: "",
-    nombres: "",
-    apellidos: "",
-    email: "",
-    password: "",
-    telefono: "",
-  });
+const [formulario, setFormulario] = useState({
+  id: null,
+  rolId: "",
+  departamentoId: "",
+  nombres: "",
+  apellidos: "",
+  email: "",
+  password: "",
+  telefono: "",
+});
 
   useEffect(() => {
     cargarDatos();
@@ -63,16 +64,17 @@ function UsuariosPage() {
     });
   };
 
-  const limpiarFormulario = () => {
-    setFormulario({
-      rolId: "",
-      departamentoId: "",
-      nombres: "",
-      apellidos: "",
-      email: "",
-      password: "",
-      telefono: "",
-    });
+const limpiarFormulario = () => {
+  setFormulario({
+    id: null,
+    rolId: "",
+    departamentoId: "",
+    nombres: "",
+    apellidos: "",
+    email: "",
+    password: "",
+    telefono: "",
+  });
 
     setFormularioVisible(false);
   };
@@ -81,6 +83,20 @@ function UsuariosPage() {
     limpiarFormulario();
     setFormularioVisible(true);
   };
+  const editarUsuario = (usuario) => {
+  setFormulario({
+    id: usuario.id,
+    rolId: usuario.rol?.id || "",
+    departamentoId: usuario.departamento?.id || "",
+    nombres: usuario.nombres || "",
+    apellidos: usuario.apellidos || "",
+    email: usuario.email || "",
+    password: "",
+    telefono: usuario.telefono || "",
+  });
+
+  setFormularioVisible(true);
+};
 
   const guardarUsuario = async (event) => {
     event.preventDefault();
@@ -110,36 +126,56 @@ function UsuariosPage() {
       return;
     }
 
-    if (!formulario.password.trim()) {
-      await mostrarAdvertencia("La contraseña es obligatoria.");
-      return;
+    if (!formulario.id && !formulario.password.trim()) {
+    await mostrarAdvertencia("La contraseña es obligatoria.");
+    return;
     }
 
-    try {
-      setGuardando(true);
+try {
+  setGuardando(true);
 
-      const data = {
-        rolId: Number(formulario.rolId),
-        departamentoId: Number(formulario.departamentoId),
-        nombres: formulario.nombres.trim(),
-        apellidos: formulario.apellidos.trim(),
-        email: formulario.email.trim(),
-        password: formulario.password.trim(),
-        telefono: formulario.telefono.trim(),
-      };
+if (formulario.id) {
+  const data = {
+    id: formulario.id,
+    rol: {
+      id: Number(formulario.rolId),
+    },
+    departamento: {
+      id: Number(formulario.departamentoId),
+    },
+    nombres: formulario.nombres.trim(),
+    apellidos: formulario.apellidos.trim(),
+    email: formulario.email.trim(),
+    telefono: formulario.telefono.trim(),
+  };
 
-      await crearUsuario(data);
+  await actualizarUsuario(data);
 
-      await mostrarExito("Usuario creado correctamente.");
+  await mostrarExito("Usuario actualizado correctamente.");
+} else {
+  const data = {
+    rolId: Number(formulario.rolId),
+    departamentoId: Number(formulario.departamentoId),
+    nombres: formulario.nombres.trim(),
+    apellidos: formulario.apellidos.trim(),
+    email: formulario.email.trim(),
+    password: formulario.password.trim(),
+    telefono: formulario.telefono.trim(),
+  };
 
-      limpiarFormulario();
-      await cargarDatos();
-    } catch (err) {
-      console.error(err);
-      await mostrarError("No se pudo crear el usuario.");
-    } finally {
-      setGuardando(false);
-    }
+  await crearUsuario(data);
+
+  await mostrarExito("Usuario creado correctamente.");
+}
+
+  limpiarFormulario();
+  await cargarDatos();
+} catch (err) {
+  console.error(err);
+  await mostrarError("No se pudo guardar el usuario.");
+} finally {
+  setGuardando(false);
+}
   };
 
   const inputClass =
@@ -175,9 +211,9 @@ function UsuariosPage() {
         <section className="mb-6 rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
           <div className="mb-5 flex items-center justify-between">
             <div>
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
-                Nuevo usuario
-              </h2>
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+                {formulario.id ? "Editar usuario" : "Nuevo usuario"}
+                </h2>
 
               <p className="text-sm text-slate-500 dark:text-slate-400">
                 Completa la información para registrar un usuario.
@@ -283,20 +319,20 @@ function UsuariosPage() {
                 placeholder="0999999999"
               />
             </div>
-
+            {!formulario.id && (
             <div className="md:col-span-2">
-              <label className={labelClass}>Contraseña</label>
+                <label className={labelClass}>Contraseña</label>
 
-              <input
+                <input
                 type="password"
                 name="password"
                 value={formulario.password}
                 onChange={manejarCambio}
                 className={inputClass}
                 placeholder="Contraseña inicial"
-              />
+                />
             </div>
-
+            )}
             <div className="flex justify-end gap-3 md:col-span-2">
               <button
                 type="button"
@@ -333,47 +369,59 @@ function UsuariosPage() {
                 <th className="p-3 text-left text-sm">Rol</th>
                 <th className="p-3 text-left text-sm">Departamento</th>
                 <th className="p-3 text-left text-sm">Estado</th>
+                <th className="p-3 text-right text-sm">Acciones</th>
               </tr>
             </thead>
 
-            <tbody>
-              {usuarios.length === 0 && (
+       <tbody>
+            {usuarios.length === 0 && (
                 <tr>
-                  <td
-                    colSpan="5"
+                <td
+                    colSpan="6"
                     className="p-4 text-center text-slate-500 dark:text-slate-400"
-                  >
-                    No existen usuarios registrados.
-                  </td>
-                </tr>
-              )}
-
-              {usuarios.map((usuario) => (
-                <tr
-                  key={usuario.id}
-                  className="border-b border-slate-100 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60"
                 >
-                  <td className="p-3 font-medium text-slate-900 dark:text-white">
-                    {obtenerNombreUsuario(usuario)}
-                  </td>
-
-                  <td className="p-3 text-slate-700 dark:text-slate-300">
-                    {usuario.email}
-                  </td>
-
-                  <td className="p-3 text-slate-700 dark:text-slate-300">
-                    {usuario.rol?.nombre || usuario.rol?.codigo || "Sin rol"}
-                  </td>
-
-                  <td className="p-3 text-slate-700 dark:text-slate-300">
-                    {usuario.departamento?.nombre || "Sin departamento"}
-                  </td>
-
-                  <td className="p-3 text-slate-700 dark:text-slate-300">
-                    {usuario.estadoRegistro || "Sin estado"}
-                  </td>
+                    No existen usuarios registrados.
+                </td>
                 </tr>
-              ))}
+            )}
+
+            {usuarios.map((usuario) => (
+                <tr
+                key={usuario.id}
+                className="border-b border-slate-100 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60"
+                >
+                <td className="p-3 font-medium text-slate-900 dark:text-white">
+                    {obtenerNombreUsuario(usuario)}
+                </td>
+
+                <td className="p-3 text-slate-700 dark:text-slate-300">
+                    {usuario.email}
+                </td>
+
+                <td className="p-3 text-slate-700 dark:text-slate-300">
+                    {usuario.rol?.nombre || usuario.rol?.codigo || "Sin rol"}
+                </td>
+
+                <td className="p-3 text-slate-700 dark:text-slate-300">
+                    {usuario.departamento?.nombre || "Sin departamento"}
+                </td>
+
+                <td className="p-3 text-slate-700 dark:text-slate-300">
+                    {usuario.estadoRegistro || "Sin estado"}
+                </td>
+
+                <td className="p-3 text-right">
+                    <button
+                    type="button"
+                    onClick={() => editarUsuario(usuario)}
+                    className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                    >
+                    <Edit size={16} />
+                    Editar
+                    </button>
+                </td>
+                </tr>
+            ))}
             </tbody>
           </table>
         )}

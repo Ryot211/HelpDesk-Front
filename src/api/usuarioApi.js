@@ -8,3 +8,7 @@ export const listarUsuarios = () => {
 export const crearUsuario = (data) => {
   return api.post("/api/usuarios/crear", data);
 };
+
+export const actualizarUsuario = (data) => {
+  return api.post("/api/usuarios/actualizar", data);
+};
