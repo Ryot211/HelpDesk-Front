@@ -2,6 +2,7 @@ import { LayoutDashboard, Ticket, PlusCircle } from "lucide-react";
 import { NavLink } from "react-router-dom";
 import { Tags } from "lucide-react";
 import { Building2 } from "lucide-react";
+import { Users } from "lucide-react";
 
 function Sidebar() {
   const menuItems = [
@@ -29,6 +30,11 @@ function Sidebar() {
         label: "Departamentos",
         path: "/departamentos",
         icon: Building2,
+      },
+      {
+        label: "Usuarios",
+        path: "/usuarios",
+        icon: Users,
       }
   ];
 
