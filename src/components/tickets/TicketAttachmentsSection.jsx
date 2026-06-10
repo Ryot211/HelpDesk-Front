@@ -6,7 +6,7 @@ import {
   registrarAdjuntoTicket,
 } from "../../api/ticketApi";
 import { formatearFecha } from "../../utils/formatters";
-const { usuario } = useAuth();
+import { useAuth } from "../../context/AuthContext";
 import {
   confirmarAccion,
   mostrarError,
