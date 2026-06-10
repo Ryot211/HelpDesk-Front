@@ -6,10 +6,12 @@ import {
   cerrarTicket,
 } from "../../api/ticketApi";
 import { listarUsuarios } from "../../api/usuarioApi";
-import { TICKET_ESTADOS, USUARIO_PRUEBA_ID } from "../../utils/constantes";
+import { TICKET_ESTADOS } from "../../utils/constantes";
+import { useAuth } from "../../context/AuthContext";
 import { mostrarAdvertencia, mostrarError, mostrarExito } from "../../utils/alerts";
 
 function TicketActionsSection({ ticket, onTicketUpdated }) {
+  const { usuario } = useAuth();
   const [asignadoId, setAsignadoId] = useState("");
   const [estado, setEstado] = useState(ticket?.estado || "");
   const [solucion, setSolucion] = useState("");
@@ -123,7 +125,7 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
 
       const data = {
         ticketId: ticket.id,
-        cerradoPorId: USUARIO_PRUEBA_ID,
+        cerradoPorId: usuario.id,
         solucion: solucion.trim(),
       };
 

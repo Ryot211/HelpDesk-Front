@@ -6,7 +6,7 @@ import {
   registrarAdjuntoTicket,
 } from "../../api/ticketApi";
 import { formatearFecha } from "../../utils/formatters";
-import { USUARIO_PRUEBA_ID } from "../../utils/constantes";
+const { usuario } = useAuth();
 import {
   confirmarAccion,
   mostrarError,
@@ -14,6 +14,7 @@ import {
 } from "../../utils/alerts";
 
 function TicketAttachmentsSection({ ticketId }) {
+  const { usuario } = useAuth();
   const [adjuntos, setAdjuntos] = useState([]);
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
@@ -82,7 +83,7 @@ function TicketAttachmentsSection({ ticketId }) {
 
       const data = {
         ticketId: Number(ticketId),
-        subidoPorId: USUARIO_PRUEBA_ID,
+        subidoPorId: usuario.id,
         nombreOriginal: formulario.nombreOriginal.trim(),
         nombreArchivo: formulario.nombreArchivo.trim(),
         rutaArchivo: formulario.rutaArchivo.trim(),

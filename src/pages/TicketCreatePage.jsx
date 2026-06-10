@@ -4,11 +4,13 @@ import { ArrowLeft, Save } from "lucide-react";
 import { crearTicket } from "../api/ticketApi";
 import { listarCategoriasTicket } from "../api/categoriaTicketApi";
 import { listarDepartamentos } from "../api/departamentoApi";
-import { TICKET_PRIORIDADES, USUARIO_PRUEBA_ID } from "../utils/constantes";
+import { TICKET_PRIORIDADES } from "../utils/constantes";
+import { useAuth } from "../context/AuthContext";
 import { mostrarError, mostrarExito } from "../utils/alerts";
 
 function TicketCreatePage() {
   const navigate = useNavigate();
+  const { usuario } = useAuth();
 
   const [categorias, setCategorias] = useState([]);
   const [departamentos, setDepartamentos] = useState([]);
@@ -91,7 +93,7 @@ function TicketCreatePage() {
         prioridad: formulario.prioridad,
         categoriaId: Number(formulario.categoriaId),
         departamentoSolicitanteId: Number(formulario.departamentoSolicitanteId),
-        creadoPorId: USUARIO_PRUEBA_ID,
+       creadoPorId: usuario.id,
       };
 
       const response = await crearTicket(data);

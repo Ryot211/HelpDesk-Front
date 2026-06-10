@@ -4,13 +4,15 @@ import {
   listarComentariosTicket,
 } from "../../api/ticketApi";
 import { formatearFecha } from "../../utils/formatters";
-import { TIPO_COMENTARIO, USUARIO_PRUEBA_ID } from "../../utils/constantes";
+import { TIPO_COMENTARIO } from "../../utils/constantes";
+import { useAuth } from "../../context/AuthContext";
 import {
   mostrarError,
   mostrarExito,
 } from "../../utils/alerts";
 
 function TicketCommentsSection({ ticketId }) {
+  const { usuario } = useAuth();
   const [comentarios, setComentarios] = useState([]);
   const [comentarioTexto, setComentarioTexto] = useState("");
   const [cargando, setCargando] = useState(true);
@@ -53,7 +55,7 @@ function TicketCommentsSection({ ticketId }) {
 
       const data = {
         ticketId: Number(ticketId),
-        usuarioId: USUARIO_PRUEBA_ID,
+        usuarioId: usuario.id,
         comentario: comentarioTexto.trim(),
         tipo: TIPO_COMENTARIO.PUBLICO,
       };
