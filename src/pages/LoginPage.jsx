@@ -50,7 +50,6 @@ function LoginPage() {
 
       iniciarSesion(response.data);
 
-      await mostrarExito("Inicio de sesión correcto.");
 
       navigate("/dashboard");
     } catch (err) {
