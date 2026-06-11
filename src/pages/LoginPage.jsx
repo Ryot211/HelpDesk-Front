@@ -46,12 +46,14 @@ function LoginPage() {
         password: formulario.password.trim(),
       };
 
-      const response = await login(data);
+    const response = await login(data);
 
-      iniciarSesion(response.data);
+    iniciarSesion({
+      usuario: response.data.usuario,
+      token: response.data.token,
+    });
 
-
-      navigate("/dashboard");
+    navigate("/dashboard", { replace: true });
     } catch (err) {
       console.error(err);
       await mostrarError("Email o contraseña incorrectos.");
