@@ -10,6 +10,8 @@ import { TICKET_ESTADOS } from "../../utils/constantes";
 import { useAuth } from "../../context/AuthContext";
 import { mostrarAdvertencia, mostrarError, mostrarExito } from "../../utils/alerts";
 
+import { ROLES, tieneRol } from "../../utils/roles";
+
 function TicketActionsSection({ ticket, onTicketUpdated }) {
   const { usuario } = useAuth();
   const [asignadoId, setAsignadoId] = useState("");
@@ -22,10 +24,18 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
   const [procesando, setProcesando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
+  const puedeGestionarTicket = tieneRol(usuario, [
+  ROLES.ADMIN,
+  ROLES.SOPORTE,
+]);
 
-  useEffect(() => {
+useEffect(() => {
+  if (puedeGestionarTicket) {
     cargarUsuarios();
-  }, []);
+  } else {
+    setCargandoUsuarios(false);
+  }
+}, [puedeGestionarTicket]);
 
   useEffect(() => {
     setEstado(ticket?.estado || "");
@@ -155,6 +165,21 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
   const buttonClass =
     "rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200";
 
+    if (!puedeGestionarTicket) {
+  return (
+    <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
+      <div className="mb-2">
+        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+          Acciones del ticket
+        </h2>
+
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          No tienes permisos para asignar, cambiar estado o cerrar este ticket.
+        </p>
+      </div>
+    </section>
+  );
+}
   return (
     <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
       <div className="mb-5">
