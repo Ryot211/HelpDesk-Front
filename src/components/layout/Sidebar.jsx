@@ -1,42 +1,63 @@
-import { LayoutDashboard, Ticket, PlusCircle } from "lucide-react";
+import {
+  LayoutDashboard,
+  Ticket,
+  PlusCircle,
+  Tags,
+  Building2,
+  Users,
+} from "lucide-react";
 import { NavLink } from "react-router-dom";
-import { Tags } from "lucide-react";
-import { Building2 } from "lucide-react";
-import { Users } from "lucide-react";
+import { useAuth } from "../../context/AuthContext";
+import { ROLES, tieneRol } from "../../utils/roles";
 
 function Sidebar() {
+  const { usuario } = useAuth();
+
   const menuItems = [
     {
       label: "Dashboard",
       path: "/dashboard",
       icon: LayoutDashboard,
+      roles: [ROLES.ADMIN, ROLES.SOPORTE, ROLES.USUARIO_FINAL],
     },
     {
       label: "Tickets",
       path: "/tickets",
       icon: Ticket,
+      roles: [ROLES.ADMIN, ROLES.SOPORTE, ROLES.USUARIO_FINAL],
     },
     {
       label: "Nuevo Ticket",
       path: "/tickets/nuevo",
       icon: PlusCircle,
+      roles: [ROLES.ADMIN, ROLES.SOPORTE, ROLES.USUARIO_FINAL],
     },
     {
-        label: "Categorías",
-        path: "/categorias-ticket",
-        icon: Tags,
-      },
-      {
-        label: "Departamentos",
-        path: "/departamentos",
-        icon: Building2,
-      },
-      {
-        label: "Usuarios",
-        path: "/usuarios",
-        icon: Users,
-      }
+      label: "Categorías",
+      path: "/categorias-ticket",
+      icon: Tags,
+      roles: [ROLES.ADMIN],
+    },
+    {
+      label: "Departamentos",
+      path: "/departamentos",
+      icon: Building2,
+      roles: [ROLES.ADMIN],
+    },
+    {
+      label: "Usuarios",
+      path: "/usuarios",
+      icon: Users,
+      roles: [ROLES.ADMIN],
+    },
   ];
+
+  const menuFiltrado = menuItems.filter((item) =>
+    tieneRol(usuario, item.roles)
+  );
+
+  console.log("Usuario autenticado:", usuario);
+  console.log("Rol:", usuario?.rol?.codigo);
 
   return (
     <aside className="min-h-screen w-64 bg-slate-950 text-white dark:bg-black">
@@ -49,7 +70,7 @@ function Sidebar() {
 
       <nav className="p-4">
         <ul className="space-y-2">
-          {menuItems.map((item) => {
+          {menuFiltrado.map((item) => {
             const Icon = item.icon;
 
             return (
