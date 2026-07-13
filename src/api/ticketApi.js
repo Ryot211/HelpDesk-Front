@@ -1,3 +1,4 @@
+import { Archive } from "lucide-react";
 import api from "./axiosConfig";
 
 export const listarTickets = () => {
@@ -46,4 +47,13 @@ export const inactivarAdjuntoTicket = (ticketId) =>{
 
 export const listarHistorialTicket = (id) => {
   return api.post("/api/tickets/historial/listar", { id });
+};
+
+export const subirAdjuntoTicket = (ticketId, archivo) => {
+  const formData = new FormData();
+
+  formData.append("ticketId", ticketId);
+  formData.append("archivo", archivo);
+
+  return api.post("/api/tickets/adjuntos/subir", formData);
 };

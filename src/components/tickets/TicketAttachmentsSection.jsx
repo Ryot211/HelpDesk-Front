@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import { FileText, Trash2 } from "lucide-react";
+import { FileText, Trash2, Upload } from "lucide-react";
 import {
   inactivarAdjuntoTicket,
   listarAdjuntosTicket,
   registrarAdjuntoTicket,
+  subirAdjuntoTicket,
 } from "../../api/ticketApi";
 import { formatearFecha } from "../../utils/formatters";
 import { useAuth } from "../../context/AuthContext";
@@ -19,14 +20,8 @@ function TicketAttachmentsSection({ ticketId }) {
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
+  const [archivoSeleccionado, setArchivoSeleccionado] = useState(null);
 
-  const [formulario, setFormulario] = useState({
-    nombreOriginal: "",
-    nombreArchivo: "",
-    rutaArchivo: "",
-    tipoContenido: "",
-    tamanioBytes: "",
-  });
 
   useEffect(() => {
     if (ticketId) {
@@ -136,6 +131,35 @@ function TicketAttachmentsSection({ ticketId }) {
       await mostrarError("No se pudo eliminar el adjunto.");
     }
   };
+const manejarArchivoSeleccionado = (event) => {
+  const archivo = event.target.files?.[0] || null;
+  setArchivoSeleccionado(archivo);
+};
+const subirArchivo = async (event) => {
+  event.preventDefault();
+
+  if (!archivoSeleccionado) {
+    await mostrarAdvertencia("Debes seleccionar un archivo.");
+    return;
+  }
+
+  try {
+    setGuardando(true);
+    setError("");
+
+    await subirAdjuntoTicket(ticketId, archivoSeleccionado);
+
+    await mostrarExito("Archivo subido correctamente.");
+
+    setArchivoSeleccionado(null);
+
+    await cargarAdjuntos();
+  } catch (err) {
+    console.error(err);
+  } finally {
+    setGuardando(false);
+  }
+};
 
   return (
     <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
@@ -148,61 +172,44 @@ function TicketAttachmentsSection({ ticketId }) {
         </p>
       </div>
 
-      <form
-        onSubmit={registrarAdjunto}
-        className="mb-6 grid gap-4 md:grid-cols-2"
-      >
-        <InputAdjunto
-          label="Nombre original"
-          name="nombreOriginal"
-          value={formulario.nombreOriginal}
-          onChange={manejarCambio}
-          placeholder="captura-error.png"
-        />
+  <form
+  onSubmit={subirArchivo}
+  className="mb-6 rounded-xl border border-slate-200 p-4 dark:border-slate-800 dark:bg-slate-950/40"
+>
+  <div className="mb-3 flex items-center gap-2">
+    <Upload size={18} className="text-slate-700 dark:text-slate-300" />
 
-        <InputAdjunto
-          label="Nombre interno"
-          name="nombreArchivo"
-          value={formulario.nombreArchivo}
-          onChange={manejarCambio}
-          placeholder="ticket-1-captura-error.png"
-        />
+    <h3 className="font-semibold text-slate-900 dark:text-white">
+      Subir archivo
+    </h3>
+  </div>
 
-        <InputAdjunto
-          label="Ruta del archivo"
-          name="rutaArchivo"
-          value={formulario.rutaArchivo}
-          onChange={manejarCambio}
-          placeholder="/uploads/helpdesk/tickets/1/captura.png"
-        />
+  <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+    Archivo adjunto
+  </label>
 
-        <InputAdjunto
-          label="Tipo de contenido"
-          name="tipoContenido"
-          value={formulario.tipoContenido}
-          onChange={manejarCambio}
-          placeholder="image/png"
-        />
+  <input
+    type="file"
+    onChange={manejarArchivoSeleccionado}
+    className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:file:bg-white dark:file:text-slate-900"
+  />
 
-        <InputAdjunto
-          label="Tamaño en bytes"
-          name="tamanioBytes"
-          type="number"
-          value={formulario.tamanioBytes}
-          onChange={manejarCambio}
-          placeholder="245678"
-        />
+  {archivoSeleccionado && (
+    <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+      Archivo seleccionado: {archivoSeleccionado.name}
+    </p>
+  )}
 
-        <div className="flex items-end">
-          <button
-            type="submit"
-            disabled={guardando}
-            className="w-full rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
-          >
-            {guardando ? "Guardando..." : "Registrar adjunto"}
-          </button>
-        </div>
-      </form>
+  <div className="mt-4 flex justify-end">
+    <button
+      type="submit"
+      disabled={guardando}
+      className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+    >
+      {guardando ? "Subiendo..." : "Subir archivo"}
+    </button>
+  </div>
+</form>
 
       {error && (
         <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
