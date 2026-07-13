@@ -57,3 +57,8 @@ export const subirAdjuntoTicket = (ticketId, archivo) => {
 
   return api.post("/api/tickets/adjuntos/subir", formData);
 };
+export const descargarAdjuntoTicket = (id) => {
+  return api.get(`/api/tickets/adjuntos/descargar/${id}`, {
+    responseType: "blob",
+  });
+};
