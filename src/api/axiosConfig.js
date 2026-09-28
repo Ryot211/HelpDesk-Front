@@ -1,5 +1,5 @@
 import axios from "axios";
-import Swal from "sweetalert2";
+import { mostrarError, mostrarAdvertencia } from "../utils/alerts";
 
 const api = axios.create({
   baseURL: "http://localhost:8080",
@@ -120,13 +120,11 @@ function obtenerMensajeBackend(error) {
 }
 
 async function mostrarAlertaGlobal(icon, title, text) {
-  await Swal.fire({
-    icon,
-    title,
-    text,
-    confirmButtonText: "Aceptar",
-    confirmButtonColor: "#0f172a",
-  });
+  if (icon === "warning") {
+    await mostrarAdvertencia(text, title);
+  } else {
+    await mostrarError(text, title);
+  }
 }
 
 export default api;

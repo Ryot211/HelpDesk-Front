@@ -32,3 +32,68 @@
   /* Display face: page/section titles only, body stays system-ui */
   --font-display: "Space Grotesk", system-ui, sans-serif;
 }
+
+/*
+ * SweetAlert2 theming — mirrors the app's own signal/surface tokens so
+ * confirm/alert dialogs respect dark mode instead of falling back to
+ * SweetAlert2's own light-only defaults. `!important` is intentional here:
+ * it overrides a third-party library's baked-in stylesheet, not our own.
+ */
+.swal-popup {
+  background: var(--color-surface) !important;
+  color: var(--color-text-primary) !important;
+  border-radius: 16px !important;
+}
+.dark .swal-popup {
+  background: var(--color-surface-dark) !important;
+  color: var(--color-text-primary-dark) !important;
+}
+
+.swal-title {
+  color: var(--color-text-primary) !important;
+  font-family: var(--font-display) !important;
+}
+.dark .swal-title {
+  color: var(--color-text-primary-dark) !important;
+}
+
+.swal-text {
+  color: var(--color-text-secondary) !important;
+}
+.dark .swal-text {
+  color: var(--color-text-secondary-dark) !important;
+}
+
+.swal-confirm-button {
+  background: var(--color-signal) !important;
+  color: var(--color-surface) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+}
+.swal-confirm-button:hover {
+  background: var(--color-signal-hover) !important;
+}
+.dark .swal-confirm-button {
+  background: var(--color-signal-dark) !important;
+  color: var(--color-surface-dark) !important;
+}
+.dark .swal-confirm-button:hover {
+  background: var(--color-signal) !important;
+}
+
+.swal-cancel-button {
+  background: transparent !important;
+  color: var(--color-text-primary) !important;
+  border: 1px solid var(--color-border) !important;
+  border-radius: 8px !important;
+  padding: 10px 20px !important;
+  font-weight: 500 !important;
+  cursor: pointer !important;
+}
+.dark .swal-cancel-button {
+  color: var(--color-text-primary-dark) !important;
+  border-color: var(--color-border-dark) !important;
+}
