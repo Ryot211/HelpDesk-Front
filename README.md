@@ -210,4 +210,4 @@ src/
 
 ## Autor
 
-Desarrollado por Ryot-Dev
+Desarrollado por Bryan Gallardo
