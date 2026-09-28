@@ -1,30 +1,20 @@
 function TicketStatusBadge({ estado }) {
+  // One hue per lifecycle meaning (DESIGN.md). REABIERTO isn't one of the
+  // six defined states — it reuses state-asignado (back-in-queue violet)
+  // rather than inventing a new hue.
   const estilos = {
-    REGISTRADO:
-      "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
-
-    ASIGNADO:
-      "bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300",
-
-    EN_PROCESO:
-      "bg-yellow-100 text-yellow-700 dark:bg-yellow-950/50 dark:text-yellow-300",
-
-    RESUELTO:
-      "bg-green-100 text-green-700 dark:bg-green-950/50 dark:text-green-300",
-
-    CERRADO:
-      "bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300",
-
-    ANULADO:
-      "bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-300",
-
-    REABIERTO:
-      "bg-purple-100 text-purple-700 dark:bg-purple-950/50 dark:text-purple-300",
+    REGISTRADO: "bg-state-registrado/15 text-state-registrado dark:bg-state-registrado/25",
+    ASIGNADO: "bg-state-asignado/15 text-state-asignado dark:bg-state-asignado/25",
+    EN_PROCESO: "bg-state-en-proceso/20 text-state-en-proceso dark:bg-state-en-proceso/30",
+    RESUELTO: "bg-state-resuelto/15 text-state-resuelto dark:bg-state-resuelto/25",
+    CERRADO: "bg-state-cerrado/15 text-state-cerrado dark:bg-state-cerrado/30 dark:text-text-secondary-dark",
+    ANULADO: "bg-state-anulado/15 text-state-anulado dark:bg-state-anulado/25",
+    REABIERTO: "bg-state-asignado/15 text-state-asignado dark:bg-state-asignado/25",
   };
 
   const clase =
     estilos[estado] ||
-    "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200";
+    "bg-state-cerrado/15 text-state-cerrado dark:bg-state-cerrado/30 dark:text-text-secondary-dark";
 
   return (
     <span className={`rounded-full px-3 py-1 text-xs font-semibold ${clase}`}>

@@ -24,6 +24,9 @@ function TicketActionsSection({ ticket, onTicketUpdated }) {
   const [procesando, setProcesando] = useState(false);
   const [mensaje, setMensaje] = useState("");
   const [error, setError] = useState("");
+  const [errorAsignado, setErrorAsignado] = useState("");
+  const [errorEstado, setErrorEstado] = useState("");
+  const [errorSolucion, setErrorSolucion] = useState("");
   const puedeGestionarTicket = tieneRol(usuario, [
   ROLES.ADMIN,
   ROLES.SOPORTE,
@@ -61,9 +64,12 @@ useEffect(() => {
     event.preventDefault();
 
     if (!asignadoId) {
+      setErrorAsignado("Debes seleccionar el usuario asignado.");
       await mostrarAdvertencia("Debes seleccionar el usuario asignado.");
       return;
     }
+
+    setErrorAsignado("");
 
     try {
       setProcesando(true);
@@ -93,9 +99,12 @@ useEffect(() => {
     event.preventDefault();
 
     if (!estado) {
+      setErrorEstado("Debes seleccionar un estado.");
       await mostrarAdvertencia("Debes seleccionar un estado.");
       return;
     }
+
+    setErrorEstado("");
 
     try {
       setProcesando(true);
@@ -124,9 +133,12 @@ useEffect(() => {
     event.preventDefault();
 
     if (!solucion.trim()) {
+      setErrorSolucion("Debes ingresar una solución para cerrar el ticket.");
       await mostrarAdvertencia("Debes ingresar una solución para cerrar el ticket.");
       return;
     }
+
+    setErrorSolucion("");
 
     try {
       setProcesando(true);
@@ -154,26 +166,26 @@ useEffect(() => {
   };
 
   const formCardClass =
-    "rounded-xl border border-slate-200 p-4 dark:border-slate-800 dark:bg-slate-950/40";
+    "rounded-lg border border-border p-4 dark:border-border-dark dark:bg-canvas-dark/40";
 
   const labelClass =
-    "mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300";
+    "mb-2 block text-sm font-medium text-text-secondary dark:text-text-secondary-dark";
 
   const inputClass =
-    "flex-1 rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none focus:border-slate-900 focus:ring-1 focus:ring-slate-900 disabled:cursor-not-allowed disabled:bg-slate-100 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:focus:border-slate-400 dark:focus:ring-slate-400 dark:disabled:bg-slate-800";
+    "flex-1 rounded-lg border border-border bg-surface p-3 text-sm text-text-primary outline-none focus:border-signal focus:ring-1 focus:ring-signal disabled:cursor-not-allowed disabled:bg-border/20 dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark dark:focus:border-signal-dark dark:focus:ring-signal-dark dark:disabled:bg-border-dark/30";
 
   const buttonClass =
-    "rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200";
+    "rounded-lg bg-signal px-4 py-2 text-sm font-medium text-surface hover:bg-signal-hover disabled:cursor-not-allowed disabled:opacity-60 dark:bg-signal-dark dark:text-surface-dark dark:hover:bg-signal";
 
     if (!puedeGestionarTicket) {
   return (
-    <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
+    <section className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
       <div className="mb-2">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <h2 className="font-display text-lg font-semibold text-text-primary dark:text-text-primary-dark">
           Acciones del ticket
         </h2>
 
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           No tienes permisos para asignar, cambiar estado o cerrar este ticket.
         </p>
       </div>
@@ -181,24 +193,24 @@ useEffect(() => {
   );
 }
   return (
-    <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
+    <section className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
       <div className="mb-5">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <h2 className="font-display text-lg font-semibold text-text-primary dark:text-text-primary-dark">
           Acciones del ticket
         </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Asigna, cambia estado o cierra el ticket.
         </p>
       </div>
 
       {mensaje && (
-        <div className="mb-4 rounded-xl bg-green-50 p-3 text-sm text-green-700 dark:bg-green-950/40 dark:text-green-300">
+        <div className="mb-4 rounded-lg bg-state-resuelto/10 p-3 text-sm text-state-resuelto dark:bg-state-resuelto/15">
           {mensaje}
         </div>
       )}
 
       {error && (
-        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <div className="mb-4 rounded-lg bg-state-anulado/10 p-3 text-sm text-state-anulado dark:bg-state-anulado/15">
           {error}
         </div>
       )}
@@ -206,22 +218,31 @@ useEffect(() => {
       <div className="space-y-6">
         <form onSubmit={asignar} className={formCardClass}>
           <div className="mb-3 flex items-center gap-2">
-            <UserPlus size={18} className="text-slate-700 dark:text-slate-300" />
-            <h3 className="font-semibold text-slate-900 dark:text-white">
+            <UserPlus size={18} className="text-text-secondary dark:text-text-secondary-dark" />
+            <h3 className="font-display font-semibold text-text-primary dark:text-text-primary-dark">
               Asignar responsable
             </h3>
           </div>
 
-          <label className={labelClass}>
+          <label htmlFor="asignado-usuario" className={labelClass}>
             Usuario soporte
           </label>
 
           <div className="flex gap-3">
             <select
+              id="asignado-usuario"
               value={asignadoId}
-              onChange={(event) => setAsignadoId(event.target.value)}
+              onChange={(event) => {
+                setAsignadoId(event.target.value);
+
+                if (errorAsignado) {
+                  setErrorAsignado("");
+                }
+              }}
               disabled={cargandoUsuarios}
               className={inputClass}
+              aria-invalid={Boolean(errorAsignado)}
+              aria-describedby={errorAsignado ? "asignado-usuario-error" : undefined}
             >
               <option value="">
                 {cargandoUsuarios ? "Cargando usuarios..." : "Selecciona un usuario"}
@@ -242,25 +263,40 @@ useEffect(() => {
               Asignar
             </button>
           </div>
+
+          {errorAsignado && (
+            <p id="asignado-usuario-error" className="mt-2 text-xs text-state-anulado">
+              {errorAsignado}
+            </p>
+          )}
         </form>
 
         <form onSubmit={cambiarEstado} className={formCardClass}>
           <div className="mb-3 flex items-center gap-2">
-            <RefreshCcw size={18} className="text-slate-700 dark:text-slate-300" />
-            <h3 className="font-semibold text-slate-900 dark:text-white">
+            <RefreshCcw size={18} className="text-text-secondary dark:text-text-secondary-dark" />
+            <h3 className="font-display font-semibold text-text-primary dark:text-text-primary-dark">
               Cambiar estado
             </h3>
           </div>
 
-          <label className={labelClass}>
+          <label htmlFor="estado-ticket" className={labelClass}>
             Estado
           </label>
 
           <div className="flex gap-3">
             <select
+              id="estado-ticket"
               value={estado}
-              onChange={(event) => setEstado(event.target.value)}
+              onChange={(event) => {
+                setEstado(event.target.value);
+
+                if (errorEstado) {
+                  setErrorEstado("");
+                }
+              }}
               className={inputClass}
+              aria-invalid={Boolean(errorEstado)}
+              aria-describedby={errorEstado ? "estado-ticket-error" : undefined}
             >
               <option value="">Selecciona un estado</option>
               <option value={TICKET_ESTADOS.REGISTRADO}>REGISTRADO</option>
@@ -280,27 +316,48 @@ useEffect(() => {
               Cambiar
             </button>
           </div>
+
+          {errorEstado && (
+            <p id="estado-ticket-error" className="mt-2 text-xs text-state-anulado">
+              {errorEstado}
+            </p>
+          )}
         </form>
 
         <form onSubmit={cerrarConSolucion} className={formCardClass}>
           <div className="mb-3 flex items-center gap-2">
-            <CheckCircle size={18} className="text-slate-700 dark:text-slate-300" />
-            <h3 className="font-semibold text-slate-900 dark:text-white">
+            <CheckCircle size={18} className="text-text-secondary dark:text-text-secondary-dark" />
+            <h3 className="font-display font-semibold text-text-primary dark:text-text-primary-dark">
               Cerrar con solución
             </h3>
           </div>
 
-          <label className={labelClass}>
+          <label htmlFor="solucion-cierre" className={labelClass}>
             Solución
           </label>
 
           <textarea
+            id="solucion-cierre"
             value={solucion}
-            onChange={(event) => setSolucion(event.target.value)}
+            onChange={(event) => {
+              setSolucion(event.target.value);
+
+              if (errorSolucion) {
+                setErrorSolucion("");
+              }
+            }}
             rows="3"
-            className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400"
+            className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-text-primary outline-none placeholder:text-text-secondary focus:border-signal focus:ring-1 focus:ring-signal dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark dark:placeholder:text-text-secondary-dark dark:focus:border-signal-dark dark:focus:ring-signal-dark"
             placeholder="Describe la solución aplicada..."
+            aria-invalid={Boolean(errorSolucion)}
+            aria-describedby={errorSolucion ? "solucion-cierre-error" : undefined}
           />
+
+          {errorSolucion && (
+            <p id="solucion-cierre-error" className="mt-1 text-xs text-state-anulado">
+              {errorSolucion}
+            </p>
+          )}
 
           <div className="mt-3 flex justify-end">
             <button

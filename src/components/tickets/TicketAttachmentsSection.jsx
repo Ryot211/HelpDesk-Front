@@ -1,10 +1,11 @@
 import { useEffect, useRef, useState } from "react";
-import { FileText, Trash2, Upload, Download } from "lucide-react";
+import { FileText, Trash2, Upload, Download, Eye } from "lucide-react";
 import {
   inactivarAdjuntoTicket,
   listarAdjuntosTicket,
   subirAdjuntoTicket,
   descargarAdjuntoTicket,
+  verAdjuntoTicket,
 } from "../../api/ticketApi";
 import { formatearFecha } from "../../utils/formatters";
 import {
@@ -49,6 +50,36 @@ function TicketAttachmentsSection({ ticketId }) {
     const archivo = event.target.files?.[0] || null;
     setArchivoSeleccionado(archivo);
   };
+  const verAdjunto = async (adjunto) => {
+  const ventana = window.open("", "_blank");
+
+  if (!ventana) {
+    await mostrarError(
+      "El navegador bloqueó la ventana emergente. Habilita las ventanas emergentes para este sitio e inténtalo de nuevo."
+    );
+    return;
+  }
+
+  try {
+    const response = await verAdjuntoTicket(adjunto.id);
+
+    const blob = new Blob([response.data], {
+      type: adjunto.tipoContenido || "application/octet-stream",
+    });
+
+    const url = window.URL.createObjectURL(blob);
+
+    ventana.location.href = url;
+
+    setTimeout(() => {
+      window.URL.revokeObjectURL(url);
+    }, 60000);
+  } catch (err) {
+    console.error(err);
+    ventana.close();
+    await mostrarError("No se pudo abrir la vista previa del adjunto.");
+  }
+};
 
   const subirArchivo = async (event) => {
     event.preventDefault();
@@ -129,30 +160,30 @@ function TicketAttachmentsSection({ ticketId }) {
   };
 
   return (
-    <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
+    <section className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
       <div className="mb-5">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <h2 className="font-display text-lg font-semibold text-text-primary dark:text-text-primary-dark">
           Adjuntos
         </h2>
 
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Registro de archivos asociados al ticket.
         </p>
       </div>
 
       <form
         onSubmit={subirArchivo}
-        className="mb-6 rounded-xl border border-slate-200 p-4 dark:border-slate-800 dark:bg-slate-950/40"
+        className="mb-6 rounded-lg border border-border p-4 dark:border-border-dark dark:bg-canvas-dark/40"
       >
         <div className="mb-3 flex items-center gap-2">
-          <Upload size={18} className="text-slate-700 dark:text-slate-300" />
+          <Upload size={18} className="text-text-secondary dark:text-text-secondary-dark" />
 
-          <h3 className="font-semibold text-slate-900 dark:text-white">
+          <h3 className="font-display font-semibold text-text-primary dark:text-text-primary-dark">
             Subir archivo
           </h3>
         </div>
 
-        <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label className="mb-2 block text-sm font-medium text-text-secondary dark:text-text-secondary-dark">
           Archivo adjunto
         </label>
 
@@ -160,11 +191,11 @@ function TicketAttachmentsSection({ ticketId }) {
           ref={inputArchivoRef}
           type="file"
           onChange={manejarArchivoSeleccionado}
-          className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-slate-900 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:file:bg-white dark:file:text-slate-900"
+          className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-text-primary outline-none file:mr-4 file:rounded-lg file:border-0 file:bg-signal file:px-4 file:py-2 file:text-sm file:font-medium file:text-surface hover:file:bg-signal-hover dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark dark:file:bg-signal-dark dark:file:text-surface-dark"
         />
 
         {archivoSeleccionado && (
-          <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+          <p className="mt-2 text-sm text-text-secondary dark:text-text-secondary-dark">
             Archivo seleccionado: {archivoSeleccionado.name}
           </p>
         )}
@@ -173,7 +204,7 @@ function TicketAttachmentsSection({ ticketId }) {
           <button
             type="submit"
             disabled={guardando}
-            className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+            className="rounded-lg bg-signal px-4 py-2 text-sm font-medium text-surface hover:bg-signal-hover disabled:cursor-not-allowed disabled:opacity-60 dark:bg-signal-dark dark:text-surface-dark dark:hover:bg-signal"
           >
             {guardando ? "Subiendo..." : "Subir archivo"}
           </button>
@@ -181,19 +212,19 @@ function TicketAttachmentsSection({ ticketId }) {
       </form>
 
       {error && (
-        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <div className="mb-4 rounded-lg bg-state-anulado/10 p-3 text-sm text-state-anulado dark:bg-state-anulado/15">
           {error}
         </div>
       )}
 
       {cargando && (
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Cargando adjuntos...
         </p>
       )}
 
       {!cargando && adjuntos.length === 0 && (
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Este ticket todavía no tiene adjuntos registrados.
         </p>
       )}
@@ -203,34 +234,42 @@ function TicketAttachmentsSection({ ticketId }) {
           {adjuntos.map((adjunto) => (
             <article
               key={adjunto.id}
-              className="flex flex-col gap-4 rounded-xl border border-slate-200 p-4 dark:border-slate-800 dark:bg-slate-950/40 md:flex-row md:items-center md:justify-between"
+              className="flex flex-col gap-4 rounded-lg border border-border p-4 dark:border-border-dark dark:bg-canvas-dark/40 md:flex-row md:items-center md:justify-between"
             >
               <div className="flex items-center gap-3">
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-border/25 text-text-secondary dark:bg-border-dark/40 dark:text-text-secondary-dark">
                   <FileText size={18} />
                 </div>
 
                 <div>
-                  <p className="font-medium text-slate-900 dark:text-white">
+                  <p className="font-medium text-text-primary dark:text-text-primary-dark">
                     {adjunto.nombreOriginal}
                   </p>
 
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-text-secondary dark:text-text-secondary-dark">
                     {adjunto.tipoContenido || "Sin tipo"} ·{" "}
                     {formatearTamanio(adjunto.tamanioBytes)}
                   </p>
 
-                  <p className="text-xs text-slate-400 dark:text-slate-500">
+                  <p className="text-xs text-text-secondary dark:text-text-secondary-dark">
                     Registrado: {formatearFecha(adjunto.fechaCreacion)}
                   </p>
                 </div>
               </div>
 
               <div className="flex flex-wrap gap-2">
+             <button
+                type="button"
+                onClick={() => verAdjunto(adjunto)}
+                className="inline-flex items-center gap-2 rounded-lg border border-signal/30 px-3 py-2 text-sm font-medium text-signal hover:bg-signal/8 dark:border-signal-dark/40 dark:text-signal-dark dark:hover:bg-signal-dark/10"
+              >
+                <Eye size={16} />
+                Ver
+              </button>
                 <button
                   type="button"
                   onClick={() => descargarAdjunto(adjunto)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                  className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary hover:bg-signal/8 dark:border-border-dark dark:text-text-primary-dark dark:hover:bg-signal-dark/10"
                 >
                   <Download size={16} />
                   Descargar
@@ -239,7 +278,7 @@ function TicketAttachmentsSection({ ticketId }) {
                 <button
                   type="button"
                   onClick={() => inactivarAdjunto(adjunto.id)}
-                  className="inline-flex items-center gap-2 rounded-lg border border-red-200 px-3 py-2 text-sm font-medium text-red-700 hover:bg-red-50 dark:border-red-900/60 dark:text-red-300 dark:hover:bg-red-950/40"
+                  className="inline-flex items-center gap-2 rounded-lg border border-state-anulado/30 px-3 py-2 text-sm font-medium text-state-anulado hover:bg-state-anulado/10 dark:border-state-anulado/40"
                 >
                   <Trash2 size={16} />
                   Eliminar

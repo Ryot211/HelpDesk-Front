@@ -34,10 +34,13 @@ El sistema HelpDesk cuenta actualmente con un backend API REST desarrollado en S
 * Gestión de categorías de ticket.
 * Gestión de departamentos.
 * Gestión básica de usuarios.
-* Login básico por email y contraseña.
+* Autenticación JWT (`POST /api/auth/login`, filtro JWT, endpoints protegidos por rol).
 * Validación de usuario activo.
 * Contraseñas almacenadas con hash.
 * Uso de DTOs, services, repositories y mappers.
+* Migraciones de base de datos versionadas con Flyway y entorno reproducible con Docker Compose.
+* 75 tests unitarios sobre `TicketService`.
+* Documentación interactiva de la API con Swagger/OpenAPI.
 
 #### Frontend
 
@@ -62,8 +65,8 @@ El sistema HelpDesk cuenta actualmente con un backend API REST desarrollado en S
 * Catálogo de departamentos.
 * Catálogo básico de usuarios.
 * Crear, editar e inactivar usuarios.
-* Login básico en frontend.
-* Rutas protegidas.
+* Login con autenticación JWT.
+* Rutas protegidas (requieren sesión iniciada).
 * Usuario autenticado guardado en localStorage.
 * Reemplazo de IDs fijos por el usuario autenticado.
 * Botón de cierre de sesión.
@@ -73,52 +76,31 @@ El sistema HelpDesk cuenta actualmente con un backend API REST desarrollado en S
 
 ## Autenticación actual
 
-Actualmente el sistema cuenta con un login básico. El usuario ingresa email y contraseña, el backend valida las credenciales y devuelve la información del usuario autenticado.
+El sistema cuenta con autenticación real basada en JWT. El usuario ingresa email y contraseña, el backend valida las credenciales mediante `POST /api/auth/login` y devuelve un token.
 
-El frontend guarda temporalmente el usuario en `localStorage` para mantener la sesión activa y proteger las rutas internas de la aplicación.
-
-Este flujo permite:
-
-* Iniciar sesión.
-* Mantener usuario autenticado en frontend.
-* Mostrar el usuario real en el Navbar.
-* Cerrar sesión.
-* Usar el ID del usuario autenticado al crear tickets, comentar, registrar adjuntos y cerrar tickets.
-
-## Próxima mejora: autenticación con JWT
-
-Como siguiente etapa se plantea implementar autenticación con JWT.
-
-Con JWT, el backend generará un token después de validar las credenciales del usuario. Este token será enviado por el frontend en cada petición usando el header:
+El frontend guarda el token en `localStorage` (junto con los datos del usuario autenticado) y lo envía en cada petición mediante un interceptor de Axios (`src/api/axiosConfig.js`), que agrega automáticamente el header:
 
 ```txt
 Authorization: Bearer <token>
 ```
 
-Esto permitirá:
+Si el backend responde `401` (token inválido o vencido), el interceptor limpia la sesión guardada y redirige al login.
 
-* Proteger endpoints desde el backend.
-* Validar si el usuario está autenticado en cada request.
-* Manejar expiración de sesión.
-* Controlar accesos según rol.
-* Evitar depender únicamente de la protección visual del frontend.
-* Preparar el sistema para una arquitectura más profesional y escalable.
+Este flujo permite:
+
+* Iniciar sesión.
+* Mantener la sesión autenticada entre recargas de página.
+* Mostrar el usuario real en el Navbar.
+* Cerrar sesión.
+* Usar el ID del usuario autenticado al crear tickets, comentar, registrar adjuntos y cerrar tickets.
 
 ## Pendiente para próximas versiones
 
-* Implementar JWT.
-* Proteger endpoints del backend.
 * Manejar expiración automática de sesión.
-* Controlar permisos por rol:
-
-  * Administrador.
-  * Soporte.
-  * Usuario final.
-* Implementar cambio de contraseña desde frontend.
+* Controlar rutas del frontend por rol (hoy `ProtectedRoute` solo verifica que haya sesión iniciada, no el rol del usuario).
+* Implementar cambio de contraseña desde frontend (el endpoint ya existe en el backend pero no hay UI).
 * Mejorar manejo global de errores.
 * Agregar paginación y filtros avanzados.
-* Agregar subida real de archivos para adjuntos.
-* Documentar endpoints principales.
 
 
 ## Tecnologías utilizadas

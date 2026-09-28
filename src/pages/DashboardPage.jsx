@@ -44,25 +44,25 @@ function DashboardPage() {
   return (
     <div>
       <div className="mb-6">
-        <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+        <h1 className="font-display text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
           Dashboard
         </h1>
 
-        <p className="text-slate-600 dark:text-slate-400">
+        <p className="text-text-secondary dark:text-text-secondary-dark">
           Resumen general del sistema HelpDesk.
         </p>
       </div>
 
       {cargando && (
-        <div className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
-          <p className="text-slate-600 dark:text-slate-400">
+        <div className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
+          <p className="text-text-secondary dark:text-text-secondary-dark">
             Cargando dashboard...
           </p>
         </div>
       )}
 
       {error && (
-        <div className="rounded-2xl bg-red-50 p-6 text-red-700 shadow dark:bg-red-950/40 dark:text-red-300">
+        <div className="rounded-2xl bg-state-anulado/10 p-6 text-state-anulado shadow dark:bg-state-anulado/15">
           {error}
         </div>
       )}
@@ -120,12 +120,12 @@ function DashboardPage() {
             />
           </div>
 
-          <div className="mt-6 rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
-            <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+          <div className="mt-6 rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
+            <h2 className="font-display text-lg font-semibold text-text-primary dark:text-text-primary-dark">
               Resumen rápido
             </h2>
 
-            <p className="mt-2 text-sm text-slate-600 dark:text-slate-400">
+            <p className="mt-2 text-sm text-text-secondary dark:text-text-secondary-dark">
               Actualmente existen {totalTickets} tickets registrados.
               De ellos, {enProceso} están en proceso y {cerrados} se encuentran cerrados.
             </p>
@@ -138,24 +138,24 @@ function DashboardPage() {
 
 function DashboardCard({ title, value, description, icon: Icon }) {
   return (
-    <div className="rounded-2xl bg-white p-5 shadow dark:bg-slate-900">
+    <div className="rounded-2xl bg-surface p-5 shadow dark:bg-surface-dark">
       <div className="flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+          <p className="text-sm font-medium text-text-secondary dark:text-text-secondary-dark">
             {title}
           </p>
 
-          <h2 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white">
+          <h2 className="font-display mt-2 text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
             {value}
           </h2>
         </div>
 
-        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+        <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-border/25 text-text-secondary dark:bg-border-dark/40 dark:text-text-secondary-dark">
           <Icon size={22} />
         </div>
       </div>
 
-      <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">
+      <p className="mt-4 text-sm text-text-secondary dark:text-text-secondary-dark">
         {description}
       </p>
     </div>

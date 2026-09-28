@@ -39,8 +39,8 @@ function TicketDetailPage() {
 
   if (cargando) {
     return (
-      <div className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
-        <p className="text-slate-600 dark:text-slate-400">
+      <div className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
+        <p className="text-text-secondary dark:text-text-secondary-dark">
           Cargando detalle del ticket...
         </p>
       </div>
@@ -49,7 +49,7 @@ function TicketDetailPage() {
 
   if (error) {
     return (
-      <div className="rounded-2xl bg-red-50 p-6 text-red-700 shadow dark:bg-red-950/40 dark:text-red-300">
+      <div className="rounded-2xl bg-state-anulado/10 p-6 text-state-anulado shadow dark:bg-state-anulado/15">
         {error}
       </div>
     );
@@ -57,8 +57,8 @@ function TicketDetailPage() {
 
   if (!ticket) {
     return (
-      <div className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
-        <p className="text-slate-600 dark:text-slate-400">
+      <div className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
+        <p className="text-text-secondary dark:text-text-secondary-dark">
           No se encontró información del ticket.
         </p>
       </div>
@@ -71,17 +71,17 @@ function TicketDetailPage() {
         <div>
           <Link
             to="/tickets"
-            className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-text-secondary hover:text-signal dark:text-text-secondary-dark dark:hover:text-signal-dark"
           >
             <ArrowLeft size={16} />
             Volver al listado
           </Link>
 
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+          <h1 className="font-display text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
             {ticket.codigo}
           </h1>
 
-          <p className="mt-1 text-slate-600 dark:text-slate-400">
+          <p className="mt-1 text-text-secondary dark:text-text-secondary-dark">
             {ticket.titulo}
           </p>
         </div>
@@ -93,43 +93,43 @@ function TicketDetailPage() {
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
-        <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900 lg:col-span-2">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <section className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark lg:col-span-2">
+          <h2 className="font-display text-lg font-semibold text-text-primary dark:text-text-primary-dark">
             Información del ticket
           </h2>
 
           <div className="mt-5 space-y-4">
             <div>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              <p className="text-sm font-medium text-text-secondary dark:text-text-secondary-dark">
                 Título
               </p>
-              <p className="text-slate-900 dark:text-slate-100">
+              <p className="text-text-primary dark:text-text-primary-dark">
                 {ticket.titulo}
               </p>
             </div>
 
             <div>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              <p className="text-sm font-medium text-text-secondary dark:text-text-secondary-dark">
                 Descripción
               </p>
-              <p className="whitespace-pre-line text-slate-900 dark:text-slate-100">
+              <p className="whitespace-pre-line text-text-primary dark:text-text-primary-dark">
                 {ticket.descripcion}
               </p>
             </div>
 
             <div>
-              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+              <p className="text-sm font-medium text-text-secondary dark:text-text-secondary-dark">
                 Solución
               </p>
-              <p className="whitespace-pre-line text-slate-900 dark:text-slate-100">
+              <p className="whitespace-pre-line text-text-primary dark:text-text-primary-dark">
                 {ticket.solucion || "Aún no se ha registrado solución."}
               </p>
             </div>
           </div>
         </section>
 
-        <aside className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
-          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <aside className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
+          <h2 className="font-display text-lg font-semibold text-text-primary dark:text-text-primary-dark">
             Datos generales
           </h2>
 
@@ -207,10 +207,10 @@ function TicketDetailPage() {
 function InfoItem({ label, value }) {
   return (
     <div>
-      <p className="text-sm font-medium text-slate-500 dark:text-slate-400">
+      <p className="text-sm font-medium text-text-secondary dark:text-text-secondary-dark">
         {label}
       </p>
-      <p className="text-slate-900 dark:text-slate-100">
+      <p className="text-text-primary dark:text-text-primary-dark">
         {value || "No definido"}
       </p>
     </div>

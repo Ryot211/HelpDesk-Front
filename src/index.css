@@ -1,3 +1,34 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&display=swap");
 @import "tailwindcss";
 
 @custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  /* Neutrals: warm graphite ramp (light/dark), never blue-tinted slate */
+  --color-canvas: oklch(96% 0.005 75);
+  --color-canvas-dark: oklch(16% 0.006 75);
+  --color-surface: oklch(99% 0.003 75);
+  --color-surface-dark: oklch(22% 0.008 75);
+  --color-border: oklch(88% 0.006 75);
+  --color-border-dark: oklch(30% 0.008 75);
+  --color-text-primary: oklch(22% 0.01 75);
+  --color-text-primary-dark: oklch(94% 0.006 75);
+  --color-text-secondary: oklch(45% 0.01 75);
+  --color-text-secondary-dark: oklch(70% 0.01 75);
+
+  /* Signal: the one accent for actions, active nav, focus rings */
+  --color-signal: oklch(58% 0.09 200);
+  --color-signal-hover: oklch(50% 0.10 200);
+  --color-signal-dark: oklch(72% 0.10 200);
+
+  /* Ticket lifecycle states: one hue per meaning, never decoration */
+  --color-state-registrado: oklch(55% 0.04 240);
+  --color-state-asignado: oklch(58% 0.11 300);
+  --color-state-en-proceso: oklch(70% 0.14 70);
+  --color-state-resuelto: oklch(60% 0.12 155);
+  --color-state-cerrado: oklch(50% 0.02 75);
+  --color-state-anulado: oklch(55% 0.11 25);
+
+  /* Display face: page/section titles only, body stays system-ui */
+  --font-display: "Space Grotesk", system-ui, sans-serif;
+}

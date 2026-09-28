@@ -61,4 +61,12 @@ export const descargarAdjuntoTicket = (id) => {
   return api.get(`/api/tickets/adjuntos/descargar/${id}`, {
     responseType: "blob",
   });
+
+ 
 };
+
+   export const verAdjuntoTicket = (id) => {
+      return api.get(`/api/tickets/adjuntos/descargar/${id}`, {
+        responseType: "blob",
+      });
+    };

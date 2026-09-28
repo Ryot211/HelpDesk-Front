@@ -57,44 +57,48 @@ function TicketsPage() {
   };
 
   const inputClass =
-    "w-full rounded-xl border border-slate-300 bg-white text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400";
+    "w-full rounded-lg border border-border bg-surface text-sm text-text-primary outline-none placeholder:text-text-secondary focus:border-signal focus:ring-1 focus:ring-signal dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark dark:placeholder:text-text-secondary-dark dark:focus:border-signal-dark dark:focus:ring-signal-dark";
 
   return (
     <div>
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+          <h1 className="font-display text-3xl font-semibold text-text-primary dark:text-text-primary-dark">
             Tickets
           </h1>
 
-          <p className="text-slate-600 dark:text-slate-400">
+          <p className="text-text-secondary dark:text-text-secondary-dark">
             Listado de tickets registrados en el sistema.
           </p>
         </div>
 
         <Link
           to="/tickets/nuevo"
-          className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+          className="inline-flex items-center gap-2 rounded-lg bg-signal px-4 py-2 text-sm font-medium text-surface hover:bg-signal-hover dark:bg-signal-dark dark:text-surface-dark dark:hover:bg-signal"
         >
           <Plus size={18} />
           Nuevo ticket
         </Link>
       </div>
 
-      <div className="mb-5 rounded-2xl bg-white p-5 shadow dark:bg-slate-900">
+      <div className="mb-5 rounded-2xl bg-surface p-5 shadow dark:bg-surface-dark">
         <div className="grid gap-4 md:grid-cols-3">
           <div className="md:col-span-2">
-            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="busqueda-ticket"
+              className="mb-2 block text-sm font-medium text-text-secondary dark:text-text-secondary-dark"
+            >
               Buscar ticket
             </label>
 
             <div className="relative">
               <Search
                 size={18}
-                className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-slate-500"
+                className="absolute left-3 top-1/2 -translate-y-1/2 text-text-secondary dark:text-text-secondary-dark"
               />
 
               <input
+                id="busqueda-ticket"
                 type="text"
                 value={busqueda}
                 onChange={(event) => setBusqueda(event.target.value)}
@@ -105,11 +109,15 @@ function TicketsPage() {
           </div>
 
           <div>
-            <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="estado-filtro"
+              className="mb-2 block text-sm font-medium text-text-secondary dark:text-text-secondary-dark"
+            >
               Estado
             </label>
 
             <select
+              id="estado-filtro"
               value={estadoFiltro}
               onChange={(event) => setEstadoFiltro(event.target.value)}
               className={`${inputClass} p-3`}
@@ -126,14 +134,14 @@ function TicketsPage() {
           </div>
         </div>
 
-        <div className="mt-4 flex items-center justify-between border-t border-slate-100 pt-4 dark:border-slate-800">
-          <p className="text-sm text-slate-600 dark:text-slate-400">
+        <div className="mt-4 flex items-center justify-between border-t border-border pt-4 dark:border-border-dark">
+          <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
             Mostrando{" "}
-            <span className="font-semibold text-slate-900 dark:text-white">
+            <span className="font-semibold text-text-primary dark:text-text-primary-dark">
               {ticketsFiltrados.length}
             </span>{" "}
             de{" "}
-            <span className="font-semibold text-slate-900 dark:text-white">
+            <span className="font-semibold text-text-primary dark:text-text-primary-dark">
               {tickets.length}
             </span>{" "}
             tickets.
@@ -142,7 +150,7 @@ function TicketsPage() {
           <button
             type="button"
             onClick={limpiarFiltros}
-            className="text-sm font-medium text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white"
+            className="text-sm font-medium text-text-secondary hover:text-signal dark:text-text-secondary-dark dark:hover:text-signal-dark"
           >
             Limpiar filtros
           </button>
@@ -150,21 +158,21 @@ function TicketsPage() {
       </div>
 
       {cargando && (
-        <div className="rounded-xl bg-white p-4 text-slate-600 shadow dark:bg-slate-900 dark:text-slate-400">
+        <div className="rounded-lg bg-surface p-4 text-text-secondary shadow dark:bg-surface-dark dark:text-text-secondary-dark">
           Cargando tickets...
         </div>
       )}
 
       {error && (
-        <div className="rounded-xl bg-red-50 p-4 text-red-700 shadow dark:bg-red-950/40 dark:text-red-300">
+        <div className="rounded-lg bg-state-anulado/10 p-4 text-state-anulado shadow dark:bg-state-anulado/15">
           {error}
         </div>
       )}
 
       {!cargando && !error && (
-        <div className="overflow-hidden rounded-2xl bg-white shadow dark:bg-slate-900">
+        <div className="overflow-x-auto rounded-2xl bg-surface shadow dark:bg-surface-dark">
           <table className="w-full border-collapse">
-            <thead className="bg-slate-900 text-white dark:bg-black">
+            <thead className="bg-canvas-dark text-text-primary-dark">
               <tr>
                 <th className="p-3 text-left text-sm">Código</th>
                 <th className="p-3 text-left text-sm">Título</th>
@@ -180,7 +188,7 @@ function TicketsPage() {
                 <tr>
                   <td
                     colSpan="6"
-                    className="p-4 text-center text-slate-500 dark:text-slate-400"
+                    className="p-4 text-center text-text-secondary dark:text-text-secondary-dark"
                   >
                     No existen tickets con los filtros aplicados.
                   </td>
@@ -190,15 +198,15 @@ function TicketsPage() {
               {ticketsFiltrados.map((ticket) => (
                 <tr
                   key={ticket.id}
-                  className="border-b border-slate-100 hover:bg-slate-50 dark:border-slate-800 dark:hover:bg-slate-800/60"
+                  className="border-b border-border hover:bg-canvas dark:border-border-dark dark:hover:bg-canvas-dark/60"
                 >
-                  <td className="p-3 font-medium text-slate-900 dark:text-white">
+                  <td className="p-3 font-medium text-text-primary dark:text-text-primary-dark">
                     {ticket.codigo}
                   </td>
 
-                  <td className="p-3 text-slate-700 dark:text-slate-300">
+                  <td className="p-3 text-text-primary dark:text-text-primary-dark">
                     <div className="font-medium">{ticket.titulo}</div>
-                    <div className="text-xs text-slate-500 dark:text-slate-400">
+                    <div className="text-xs text-text-secondary dark:text-text-secondary-dark">
                       {ticket.categoria?.nombre || "Sin categoría"}
                     </div>
                   </td>
@@ -211,14 +219,14 @@ function TicketsPage() {
                     <TicketPriorityBadge prioridad={ticket.prioridad} />
                   </td>
 
-                  <td className="p-3 text-sm text-slate-700 dark:text-slate-300">
+                  <td className="p-3 text-sm text-text-primary dark:text-text-primary-dark">
                     {formatearFecha(ticket.fechaCreacion)}
                   </td>
 
                   <td className="p-3 text-right">
                     <Link
                       to={`/tickets/${ticket.id}`}
-                      className="inline-flex items-center gap-2 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                      className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-text-primary hover:bg-signal/8 dark:border-border-dark dark:text-text-primary-dark dark:hover:bg-signal-dark/10"
                     >
                       <Eye size={16} />
                       Ver

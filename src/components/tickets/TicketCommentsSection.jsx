@@ -18,6 +18,7 @@ function TicketCommentsSection({ ticketId }) {
   const [cargando, setCargando] = useState(true);
   const [guardando, setGuardando] = useState(false);
   const [error, setError] = useState("");
+  const [errorComentario, setErrorComentario] = useState("");
 
   useEffect(() => {
     if (ticketId) {
@@ -45,9 +46,12 @@ function TicketCommentsSection({ ticketId }) {
     event.preventDefault();
 
     if (!comentarioTexto.trim()) {
+      setErrorComentario("Debes ingresar un comentario para poder agregarlo.");
       await mostrarError("Debes ingresar un comentario para poder agregarlo.");
       return;
     }
+
+    setErrorComentario("");
 
     try {
       setGuardando(true);
@@ -74,35 +78,53 @@ function TicketCommentsSection({ ticketId }) {
   };
 
   return (
-    <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
+    <section className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
       <div className="mb-5">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <h2 className="font-display text-lg font-semibold text-text-primary dark:text-text-primary-dark">
           Comentarios
         </h2>
 
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Registro de observaciones realizadas sobre el ticket.
         </p>
       </div>
 
       <form onSubmit={enviarComentario} className="mb-6">
-        <label className="mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300">
+        <label
+          htmlFor="comentario-texto"
+          className="mb-2 block text-sm font-medium text-text-secondary dark:text-text-secondary-dark"
+        >
           Nuevo comentario
         </label>
 
         <textarea
+          id="comentario-texto"
           value={comentarioTexto}
-          onChange={(event) => setComentarioTexto(event.target.value)}
+          onChange={(event) => {
+            setComentarioTexto(event.target.value);
+
+            if (errorComentario) {
+              setErrorComentario("");
+            }
+          }}
           rows="3"
-          className="w-full rounded-xl border border-slate-300 bg-white p-3 text-sm text-slate-900 outline-none placeholder:text-slate-400 focus:border-slate-900 focus:ring-1 focus:ring-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:border-slate-400 dark:focus:ring-slate-400"
+          className="w-full rounded-lg border border-border bg-surface p-3 text-sm text-text-primary outline-none placeholder:text-text-secondary focus:border-signal focus:ring-1 focus:ring-signal dark:border-border-dark dark:bg-surface-dark dark:text-text-primary-dark dark:placeholder:text-text-secondary-dark dark:focus:border-signal-dark dark:focus:ring-signal-dark"
           placeholder="Escribe un comentario sobre el ticket..."
+          aria-invalid={Boolean(errorComentario)}
+          aria-describedby={errorComentario ? "comentario-texto-error" : undefined}
         />
+
+        {errorComentario && (
+          <p id="comentario-texto-error" className="mt-1 text-xs text-state-anulado">
+            {errorComentario}
+          </p>
+        )}
 
         <div className="mt-3 flex justify-end">
           <button
             type="submit"
             disabled={guardando}
-            className="rounded-xl bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-700 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+            className="rounded-lg bg-signal px-4 py-2 text-sm font-medium text-surface hover:bg-signal-hover disabled:cursor-not-allowed disabled:opacity-60 dark:bg-signal-dark dark:text-surface-dark dark:hover:bg-signal"
           >
             {guardando ? "Guardando..." : "Agregar comentario"}
           </button>
@@ -110,19 +132,19 @@ function TicketCommentsSection({ ticketId }) {
       </form>
 
       {error && (
-        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <div className="mb-4 rounded-lg bg-state-anulado/10 p-3 text-sm text-state-anulado dark:bg-state-anulado/15">
           {error}
         </div>
       )}
 
       {cargando && (
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Cargando comentarios...
         </p>
       )}
 
       {!cargando && comentarios.length === 0 && (
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Este ticket todavía no tiene comentarios.
         </p>
       )}
@@ -132,25 +154,25 @@ function TicketCommentsSection({ ticketId }) {
           {comentarios.map((comentario) => (
             <article
               key={comentario.id}
-              className="rounded-xl border border-slate-200 p-4 dark:border-slate-800 dark:bg-slate-950/40"
+              className="rounded-lg border border-border p-4 dark:border-border-dark dark:bg-canvas-dark/40"
             >
               <div className="mb-2 flex items-center justify-between">
                 <div>
-                  <p className="font-medium text-slate-900 dark:text-white">
+                  <p className="font-medium text-text-primary dark:text-text-primary-dark">
                     {obtenerNombreUsuario(comentario.usuario)}
                   </p>
 
-                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                  <p className="text-xs text-text-secondary dark:text-text-secondary-dark">
                     {formatearFecha(comentario.fechaCreacion)}
                   </p>
                 </div>
 
-                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                <span className="rounded-full bg-border/25 px-3 py-1 text-xs font-semibold text-text-secondary dark:bg-border-dark/40 dark:text-text-secondary-dark">
                   {comentario.tipo}
                 </span>
               </div>
 
-              <p className="whitespace-pre-line text-sm text-slate-700 dark:text-slate-300">
+              <p className="whitespace-pre-line text-sm text-text-primary dark:text-text-primary-dark">
                 {comentario.comentario}
               </p>
             </article>

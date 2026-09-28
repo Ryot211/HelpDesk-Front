@@ -1,14 +1,18 @@
 function TicketPriorityBadge({ prioridad }) {
+  // Priority isn't pinned to specific hues in DESIGN.md, so these reuse the
+  // same six lifecycle tokens rather than introducing new accents:
+  // BAJA -> muted graphite (cerrado), MEDIA -> neutral gray-blue (registrado),
+  // ALTA -> amber "needs attention" (en-proceso), CRITICA -> desaturated red (anulado).
   const estilos = {
-    BAJA: "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200",
-    MEDIA: "bg-blue-100 text-blue-700 dark:bg-blue-950/50 dark:text-blue-300",
-    ALTA: "bg-orange-100 text-orange-700 dark:bg-orange-950/50 dark:text-orange-300",
-    CRITICA: "bg-red-100 text-red-700 dark:bg-red-950/50 dark:text-red-300",
+    BAJA: "bg-state-cerrado/15 text-state-cerrado dark:bg-state-cerrado/30 dark:text-text-secondary-dark",
+    MEDIA: "bg-state-registrado/15 text-state-registrado dark:bg-state-registrado/25",
+    ALTA: "bg-state-en-proceso/20 text-state-en-proceso dark:bg-state-en-proceso/30",
+    CRITICA: "bg-state-anulado/15 text-state-anulado dark:bg-state-anulado/25",
   };
 
   const clase =
     estilos[prioridad] ||
-    "bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200";
+    "bg-state-cerrado/15 text-state-cerrado dark:bg-state-cerrado/30 dark:text-text-secondary-dark";
 
   return (
     <span className={`rounded-full px-3 py-1 text-xs font-semibold ${clase}`}>

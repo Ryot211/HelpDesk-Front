@@ -31,31 +31,31 @@ function TicketHistorySection({ ticketId }) {
   };
 
   return (
-    <section className="rounded-2xl bg-white p-6 shadow dark:bg-slate-900">
+    <section className="rounded-2xl bg-surface p-6 shadow dark:bg-surface-dark">
       <div className="mb-5">
-        <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
+        <h2 className="font-display text-lg font-semibold text-text-primary dark:text-text-primary-dark">
           Historial
         </h2>
 
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Registro de acciones realizadas sobre el ticket.
         </p>
       </div>
 
       {error && (
-        <div className="mb-4 rounded-xl bg-red-50 p-3 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-300">
+        <div className="mb-4 rounded-lg bg-state-anulado/10 p-3 text-sm text-state-anulado dark:bg-state-anulado/15">
           {error}
         </div>
       )}
 
       {cargando && (
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Cargando historial...
         </p>
       )}
 
       {!cargando && historial.length === 0 && (
-        <p className="text-sm text-slate-500 dark:text-slate-400">
+        <p className="text-sm text-text-secondary dark:text-text-secondary-dark">
           Este ticket todavía no tiene historial registrado.
         </p>
       )}
@@ -65,31 +65,31 @@ function TicketHistorySection({ ticketId }) {
           {historial.map((item) => (
             <article
               key={item.id}
-              className="flex gap-4 rounded-xl border border-slate-200 p-4 dark:border-slate-800 dark:bg-slate-950/40"
+              className="flex gap-4 rounded-lg border border-border p-4 dark:border-border-dark dark:bg-canvas-dark/40"
             >
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-border/25 text-text-secondary dark:bg-border-dark/40 dark:text-text-secondary-dark">
                 <Clock size={18} />
               </div>
 
               <div className="flex-1">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
-                    <p className="font-semibold text-slate-900 dark:text-white">
+                    <p className="font-semibold text-text-primary dark:text-text-primary-dark">
                       {item.accion}
                     </p>
 
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
+                    <p className="text-xs text-text-secondary dark:text-text-secondary-dark">
                       {formatearFecha(item.fechaCreacion)}
                     </p>
                   </div>
 
-                  <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                  <span className="rounded-full bg-border/25 px-3 py-1 text-xs font-semibold text-text-secondary dark:bg-border-dark/40 dark:text-text-secondary-dark">
                     {obtenerNombreUsuario(item.usuario)}
                   </span>
                 </div>
 
                 {item.observacion && (
-                  <p className="mt-3 text-sm text-slate-700 dark:text-slate-300">
+                  <p className="mt-3 text-sm text-text-primary dark:text-text-primary-dark">
                     {item.observacion}
                   </p>
                 )}
@@ -141,12 +141,12 @@ function TicketHistorySection({ ticketId }) {
 
 function DatoCambio({ label, value }) {
   return (
-    <div className="rounded-lg bg-slate-50 p-3 dark:bg-slate-800/70">
-      <p className="text-xs font-medium text-slate-500 dark:text-slate-400">
+    <div className="rounded-lg bg-canvas p-3 dark:bg-canvas-dark/70">
+      <p className="text-xs font-medium text-text-secondary dark:text-text-secondary-dark">
         {label}
       </p>
 
-      <p className="text-slate-800 dark:text-slate-100">
+      <p className="text-text-primary dark:text-text-primary-dark">
         {value}
       </p>
     </div>
